@@ -68,7 +68,7 @@ npm install
 npm run dev
 ```
 
-[Accès vers le repo du côté Back](https://github.com/O-clock-Cambridge/projet-blablabook-back)
+[Accès vers le repo du côté Back](https://github.com/LudivineLeLan/Blablabook-back)
 
 ```bash
 # Backend
