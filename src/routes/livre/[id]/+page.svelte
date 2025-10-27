@@ -44,9 +44,6 @@
 				inBooklist = result.inBooklist;
 				toRead = result.toRead !== undefined ? result.toRead : true;
 				updateBookStatus(data.book.id, { inBooklist: inBooklist, toRead: toRead });
-				console.log(
-					`Statut récupéré: ${inBooklist ? 'Dans booklist' : 'Pas dans booklist'}, ${toRead ? 'À lire' : 'Lu'}`
-				);
 			}
 		} catch (error) {
 			console.error('Erreur lors de la vérification du statut:', error);
@@ -135,7 +132,7 @@
 		}
 
 		if (!inBooklist) {
-			console.warn('Le livre doit être dans la booklist pour modifier le statut de lecture');
+			console.error('Le livre doit être dans la booklist pour modifier le statut de lecture');
 			return;
 		}
 
@@ -172,17 +169,18 @@
 		}
 	}
 
-	let unsubscribe;
-	let hasInitialized = false;
+	let unsubscribe; // On stocke la fonction pour se désabonner du store plus tard
+	let hasInitialized = false; // Pour ne lancer `checkBookStatus()` qu'une seule fois
 
 	onMount(() => {
 		getBookStatus('dummy', new Map());
 
 		unsubscribe = booklistStatus.subscribe((map) => {
-			const bookIdStr = String(data.book.id);
+			const bookIdString = String(data.book.id); // Convertir l'ID du livre en string car les clés de la Map sont des strings
 			const status = getBookStatus(bookIdStr, map);
 
-			if (map.has(bookIdStr)) {
+			if (map.has(bookIdString)) {
+				// Si le livre est déjà dans le store, mettre à jour les variables locales
 				inBooklist = status.inBooklist;
 				toRead = status.toRead;
 			} else if (!hasInitialized) {

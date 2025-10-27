@@ -5,7 +5,7 @@ export async function load({ fetch, url }) {
 
   let apiUrl = `http://localhost:3000/catalog?page=${page}&limit=${limit}`;
   if (search) {
-    apiUrl += `&search=${encodeURIComponent(search)}`;
+    apiUrl += `&search=${encodeURIComponent(search)}`; //si recherche, on ajoute le terme dans l'URL 
   }
 
   const res = await fetch(apiUrl);

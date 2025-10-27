@@ -178,6 +178,7 @@
 						<p class="book_author">
 							{#if book.book.authors?.length}
 								{book.book.authors.map((author) => `${author.firstname} ${author.name}`).join(', ')}
+								<!-- Liste des auteurs séparés par des virgules -->
 							{:else}
 								Auteur inconnu
 							{/if}
@@ -439,7 +440,7 @@
 		font-weight: 500;
 	}
 
-	/* BOUTONS DU BAS */
+	/* BOUTONS DU BAS DE PAGE */
 	.bottom-buttons {
 		display: flex;
 		justify-content: space-between;

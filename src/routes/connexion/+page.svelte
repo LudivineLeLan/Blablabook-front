@@ -10,6 +10,7 @@
 		errorMessage = '';
 
 		const formData = new FormData(event.target);
+		//FormData = structure JS pour représenter un form & gérer les champs texte + fichiers, automatiquement géré par fetch
 
 		const res = await fetch('http://localhost:3000/user/login', {
 			method: 'POST',
@@ -27,8 +28,6 @@
 
 			//  IMPORTANT : Mettre à jour le store
 			user.set(data.user);
-
-			console.log('Connexion réussie, utilisateur:', data.user);
 
 			goto('/mon-compte');
 		} else {
@@ -52,7 +51,7 @@
 		// Envoie le FormData tel quel, sans JSON.stringify
 		const res = await fetch('http://localhost:3000/user/register', {
 			method: 'POST',
-			body: formData //  multipart/form-data automatiquement géré
+			body: formData //  multipart/form-data automatiquement géré, envoie chaque champs séparé et encodé
 		});
 
 		const data = await res.json();
