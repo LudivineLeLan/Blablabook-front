@@ -177,7 +177,7 @@
 
 		unsubscribe = booklistStatus.subscribe((map) => {
 			const bookIdString = String(data.book.id); // Convertir l'ID du livre en string car les clés de la Map sont des strings
-			const status = getBookStatus(bookIdStr, map);
+			const status = getBookStatus(bookIdString, map);
 
 			if (map.has(bookIdString)) {
 				// Si le livre est déjà dans le store, mettre à jour les variables locales
