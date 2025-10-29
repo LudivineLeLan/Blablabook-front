@@ -108,6 +108,10 @@
 		currentSearchQuery = '';
 		if (abortController) abortController.abort();
 	}
+
+	function toggle() {
+		document.body.classList.toggle('dark-mode');
+	}
 </script>
 
 <header class="header">
@@ -119,6 +123,7 @@
 
 		<!-- Condition pour afficher les bons boutons selon l'état de connexion -->
 		<div class="auth-buttons">
+			<button class="dark-mode" onclick={toggle}>ON</button>
 			{#if $user}
 				<div class="btn-container btn-container-end">
 					<a href="/mon-compte">

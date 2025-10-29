@@ -19,6 +19,10 @@ body {
   
 }
 
+body.dark-mode {
+  background-color: black;
+}
+
 h1 {
   font-size: 32px;
   font-weight: lighter;
