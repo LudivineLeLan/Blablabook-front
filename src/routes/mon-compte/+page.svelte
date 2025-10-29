@@ -109,7 +109,7 @@
 	}
 
 	.my_informations {
-		background-color: white;
+		background-color: var(--couleur-beige-clair);
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -156,7 +156,7 @@
 	}
 
 	.booklist {
-		background-color: white;
+		background-color: var(--couleur-beige-clair);
 		display: flex;
 		align-items: center;
 		flex-direction: column;

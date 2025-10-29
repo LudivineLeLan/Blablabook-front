@@ -14,6 +14,8 @@
 	let abortController = null; // Contrôleur d'annulation pour les requêtes en cours
 	let currentSearchQuery = ''; // Permet d’éviter d’afficher les résultats d’une ancienne recherche
 
+	let darkMode = $state(false);
+
 	async function performSearch(searchQuery) {
 		if (abortController) abortController.abort(); // Si une requête est déjà en cours, on l’annule avant d’en lancer une nouvelle
 
@@ -110,7 +112,9 @@
 	}
 
 	function toggle() {
-		document.body.classList.toggle('dark-mode');
+		darkMode = !darkMode;
+		document.body.classList.toggle('dark-mode', darkMode);
+		localStorage.setItem('darkMode', darkMode);
 	}
 </script>
 
@@ -123,7 +127,7 @@
 
 		<!-- Condition pour afficher les bons boutons selon l'état de connexion -->
 		<div class="auth-buttons">
-			<button class="dark-mode" onclick={toggle}>ON</button>
+			<button class="dark-mode" onclick={toggle}>{darkMode ? '☀️' : '🌙'}</button>
 			{#if $user}
 				<div class="btn-container btn-container-end">
 					<a href="/mon-compte">
@@ -259,6 +263,11 @@
 	.btn-container a {
 		display: block;
 		text-decoration: none;
+	}
+
+	.dark-mode {
+		padding: 0.5rem 1rem;
+		background-color: none;
 	}
 
 	.connection-btn {
