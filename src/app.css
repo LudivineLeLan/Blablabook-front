@@ -16,8 +16,9 @@
 body {
   font-family: var(--font-global);
   color: var(--couleur-marron);
-  
 }
+
+
 
 h1 {
   font-size: 32px;
@@ -44,3 +45,15 @@ a {
   padding: 0;
   margin: 0;
 }  
+
+
+body.dark-mode {
+--couleur-bleu-vert: #4FA3A3;
+--couleur-marron: #E6D2C4;
+--couleur-vieux-rose: #C97B84;
+--couleur-beige-rose: #212121;
+--couleur-beige-clair: #2c2421;
+
+background-color: var(--couleur-beige-clair);
+color: var(--couleur-marron);
+}
