@@ -1,11 +1,13 @@
 <script>
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
+	import { user } from '$lib/stores/auth';
 
 	let currentUser = null;
 	let currentBooks = [];
 	let totalBooks = 0;
 	let errorMessage = '';
+	let showModal = false;
 
 	onMount(async () => {
 		const token = localStorage.getItem('token');
@@ -43,6 +45,31 @@
 			errorMessage = error.message || 'Une erreur est survenue.';
 		}
 	});
+
+	async function deleteAccount(currentUser) {
+		try {
+			const token = localStorage.getItem('token');
+			const response = await fetch(`http://localhost:3000/user/${currentUser.id}`, {
+				method: 'DELETE',
+				headers: { Authorization: `Bearer ${token}` }
+			});
+
+			if (response.ok) {
+				user.set(null);
+				localStorage.removeItem('token');
+
+				if (window.location.pathname !== '/') {
+					window.location.href = '/';
+				}
+			} else {
+				errorMessage = `Impossible de supprimer le compte (code ${response.status})`;
+				console.error(errorMessage);
+			}
+		} catch (error) {
+			console.error(error);
+			errorMessage = error.message || 'Une erreur est survenue.';
+		}
+	}
 </script>
 
 <main>
@@ -65,6 +92,26 @@
 			</div>
 		{:else}
 			<p>{errorMessage || 'Impossible de récupérer les informations utilisateur.'}</p>
+		{/if}
+		<button class="delete" aria-label="Supprimer mon compte" onclick={() => (showModal = true)}>
+			Supprimer mon compte
+		</button>
+		{#if showModal}
+			<div class="modal-container">
+				<div class="modal">
+					<p>Êtes-vous sûr de vouloir supprimer votre compte ?</p>
+					<div class="modal-buttons">
+						<button
+							class="confirmDeletion"
+							onclick={() => {
+								deleteAccount(currentUser);
+								showModal = false;
+							}}>Oui, supprimer</button
+						>
+						<button class="cancelDeletion" onclick={() => (showModal = false)}>Annuler</button>
+					</div>
+				</div>
+			</div>
 		{/if}
 	</section>
 
@@ -153,6 +200,25 @@
 		aspect-ratio: 1;
 		border-radius: 15rem;
 		border: 2px solid var(--couleur-marron);
+	}
+
+	.delete {
+		font-size: 1rem;
+		padding: 0.5rem 1rem;
+	}
+
+	.modal-buttons {
+		display: flex;
+		align-items: center;
+		flex-wrap: nowrap;
+	}
+
+	.confirmDeletion,
+	.cancelDeletion {
+		background: unset;
+		color: var(--couleur-marron);
+		border: none;
+		box-shadow: none;
 	}
 
 	.booklist {
