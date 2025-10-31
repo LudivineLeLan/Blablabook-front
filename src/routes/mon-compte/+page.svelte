@@ -7,7 +7,6 @@
 	let currentBooks = [];
 	let totalBooks = 0;
 	let errorMessage = '';
-	let showModal = false;
 
 	onMount(async () => {
 		const token = localStorage.getItem('token');
@@ -93,26 +92,13 @@
 		{:else}
 			<p>{errorMessage || 'Impossible de récupérer les informations utilisateur.'}</p>
 		{/if}
-		<button class="delete" aria-label="Supprimer mon compte" onclick={() => (showModal = true)}>
-			Supprimer mon compte
-		</button>
-		{#if showModal}
-			<div class="modal-container">
-				<div class="modal">
-					<p>Êtes-vous sûr de vouloir supprimer votre compte ?</p>
-					<div class="modal-buttons">
-						<button
-							class="confirmDeletion"
-							onclick={() => {
-								deleteAccount(currentUser);
-								showModal = false;
-							}}>Oui, supprimer</button
-						>
-						<button class="cancelDeletion" onclick={() => (showModal = false)}>Annuler</button>
-					</div>
-				</div>
-			</div>
-		{/if}
+		<button
+			class="delete"
+			aria-label="Modifier mon compte"
+			onclick={() => (window.location.href = '/editer-profil')}
+		>
+			Editer mon profil</button
+		>
 	</section>
 
 	<section class="booklist">
@@ -200,25 +186,6 @@
 		aspect-ratio: 1;
 		border-radius: 15rem;
 		border: 2px solid var(--couleur-marron);
-	}
-
-	.delete {
-		font-size: 1rem;
-		padding: 0.5rem 1rem;
-	}
-
-	.modal-buttons {
-		display: flex;
-		align-items: center;
-		flex-wrap: nowrap;
-	}
-
-	.confirmDeletion,
-	.cancelDeletion {
-		background: unset;
-		color: var(--couleur-marron);
-		border: none;
-		box-shadow: none;
 	}
 
 	.booklist {
