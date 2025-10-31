@@ -41,7 +41,7 @@
 		const confirm = form.confirm.value;
 		if (password || confirm) {
 			if (password !== confirm) {
-				errorMessage = 'Les mots de passe ne correspondent pas';
+				errorMessage = 'Merci de confirmer le mot de passe';
 				return;
 			}
 			formData.append('password', password);
@@ -187,4 +187,5 @@
 		border: none;
 		box-shadow: none;
 	}
+
 </style>
