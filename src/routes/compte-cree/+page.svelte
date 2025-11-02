@@ -1,11 +1,18 @@
 <script>
+	import { onMount } from 'svelte';
 	import emailjs from '@emailjs/browser';
 
-	let email = localStorage.getItem('pending_email') || '';
+	let email = '';
+	let token = '';
+
+	onMount(() => {
+		email = localStorage.getItem('pending_email') || '';
+		token = localStorage.getItem('pending_token') || '';
+	});
 
 	async function resendEmail() {
-		if (!email) {
-			console.error('Aucune adresse email trouvée dans le stockage local.');
+		if (!token || !email) {
+			console.error('Token ou email manquant dans le stockage local.');
 			return;
 		}
 
@@ -15,7 +22,7 @@
 				import.meta.env.VITE_EMAILJS_TEMPLATE_ID_CONFIRM,
 				{
 					to_email: email,
-					confirm_link: 'https://blablabook.com/confirm/' + encodeURIComponent(email)
+					confirm_link: `http://localhost:3000/confirm/${token}`
 				},
 				import.meta.env.VITE_EMAILJS_PUBLIC_KEY
 			);
@@ -39,9 +46,7 @@
 </div>
 
 <style>
-
-
-/*  Mobile (< 768px)*/
+	/*  Mobile (< 768px)*/
 	.optin {
 		display: flex;
 		flex-direction: column;
