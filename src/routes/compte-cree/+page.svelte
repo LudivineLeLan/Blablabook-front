@@ -1,8 +1,29 @@
 <script>
-	let email = 'test@exemple.com';
+	import emailjs from '@emailjs/browser';
+
+	let email = localStorage.getItem('pending_email') || '';
 
 	async function resendEmail() {
-		alert(`Un email de confirmation sera renvoyé à ${email}.`);
+		if (!email) {
+			console.error('Aucune adresse email trouvée dans le stockage local.');
+			return;
+		}
+
+		try {
+			const result = await emailjs.send(
+				import.meta.env.VITE_EMAILJS_SERVICE_ID,
+				import.meta.env.VITE_EMAILJS_TEMPLATE_ID_CONFIRM,
+				{
+					to_email: email,
+					confirm_link: 'https://blablabook.com/confirm/' + encodeURIComponent(email)
+				},
+				import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+			);
+
+			console.log('Email renvoyé avec succès :', result.status, result.text);
+		} catch (error) {
+			console.error('Erreur lors du renvoi EmailJS :', error);
+		}
 	}
 </script>
 
@@ -18,7 +39,9 @@
 </div>
 
 <style>
-	/*  Mobile (< 768px)*/
+
+
+/*  Mobile (< 768px)*/
 	.optin {
 		display: flex;
 		flex-direction: column;

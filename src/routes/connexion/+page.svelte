@@ -1,6 +1,7 @@
 <script>
 	import { goto } from '$app/navigation';
 	import { user } from '$lib/stores/auth.js';
+	import emailjs from '@emailjs/browser';
 
 	let isLogin = $state(true);
 	let errorMessage = $state('');
@@ -10,7 +11,6 @@
 		errorMessage = '';
 
 		const formData = new FormData(event.target);
-		//FormData = structure JS pour représenter un form & gérer les champs texte + fichiers, automatiquement géré par fetch
 
 		const res = await fetch('http://localhost:3000/user/login', {
 			method: 'POST',
@@ -25,10 +25,7 @@
 
 		if (res.ok) {
 			localStorage.setItem('token', data.token);
-
-			//  IMPORTANT : Mettre à jour le store
 			user.set(data.user);
-
 			goto('/mon-compte');
 		} else {
 			errorMessage = data.error || 'Erreur lors de la connexion';
@@ -48,18 +45,38 @@
 			return;
 		}
 
-		// Envoie le FormData tel quel, sans JSON.stringify
+		// Envoi des données d'inscription au backend
 		const res = await fetch('http://localhost:3000/user/register', {
 			method: 'POST',
-			body: formData //  multipart/form-data automatiquement géré, envoie chaque champs séparé et encodé
+			body: formData
 		});
 
 		const data = await res.json();
 
 		if (res.ok) {
-			localStorage.setItem('token', data.token);
-			user.set(data.user);
-			goto('/mon-compte');
+			// Envoi du mail de confirmation via EmailJS
+			try {
+				console.log('Email destinataire :', formData.get('email'));
+				console.log('Lien confirmation :', data.confirmLink);
+
+				await emailjs.send(
+					import.meta.env.VITE_EMAILJS_SERVICE_ID,
+					import.meta.env.VITE_EMAILJS_TEMPLATE_ID_CONFIRM,
+					{
+						email: formData.get('email'),
+						confirm_link: data.confirmLink // valeur renvoyée par ton backend
+					},
+					import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+				);
+
+				localStorage.setItem('pending_email', formData.get('email'));
+
+				console.log('Mail de confirmation envoyé !');
+				goto('/compte-cree');
+			} catch (error) {
+				console.error('Erreur lors de l’envoi EmailJS :', error);
+				errorMessage = "L'utilisateur a bien été créé, mais l'email n’a pas pu être envoyé.";
+			}
 		} else {
 			errorMessage = data.error || 'Erreur lors de la création de compte';
 		}
