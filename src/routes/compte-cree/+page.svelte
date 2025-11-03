@@ -1,8 +1,36 @@
 <script>
-	let email = 'test@exemple.com';
+	import { onMount } from 'svelte';
+	import emailjs from '@emailjs/browser';
+
+	let email = '';
+	let token = '';
+
+	onMount(() => {
+		email = localStorage.getItem('pending_email') || '';
+		token = localStorage.getItem('pending_token') || '';
+	});
 
 	async function resendEmail() {
-		alert(`Un email de confirmation sera renvoyé à ${email}.`);
+		if (!token || !email) {
+			console.error('Token ou email manquant dans le stockage local.');
+			return;
+		}
+
+		try {
+			const result = await emailjs.send(
+				import.meta.env.VITE_EMAILJS_SERVICE_ID,
+				import.meta.env.VITE_EMAILJS_TEMPLATE_ID_CONFIRM,
+				{
+					email: email,
+					confirm_link: `http://localhost:3000/confirm/${token}`
+				},
+				import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+			);
+
+			console.log('Email renvoyé avec succès :', result.status, result.text);
+		} catch (error) {
+			console.error('Erreur lors du renvoi EmailJS :', error);
+		}
 	}
 </script>
 
