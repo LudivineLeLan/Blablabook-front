@@ -70,6 +70,7 @@
 				);
 
 				localStorage.setItem('pending_email', formData.get('email'));
+				localStorage.setItem('pending_token', data.token);
 
 				console.log('Mail de confirmation envoyé !');
 				goto('/compte-cree');
