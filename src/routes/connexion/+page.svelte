@@ -56,15 +56,12 @@
 		if (res.ok) {
 			// Envoi du mail de confirmation via EmailJS
 			try {
-				console.log('Email destinataire :', formData.get('email'));
-				console.log('Lien confirmation :', data.confirmLink);
-
 				await emailjs.send(
 					import.meta.env.VITE_EMAILJS_SERVICE_ID,
 					import.meta.env.VITE_EMAILJS_TEMPLATE_ID_CONFIRM,
 					{
 						email: formData.get('email'),
-						confirm_link: data.confirmLink // valeur renvoyée par ton backend
+						confirm_link: data.confirmLink // valeur renvoyée par backend
 					},
 					import.meta.env.VITE_EMAILJS_PUBLIC_KEY
 				);
@@ -130,6 +127,9 @@
 
 			<label for="password">Mot de passe :</label>
 			<input type="password" name="password" id="password" required />
+			<a href="/motdepasse-oublie">
+        <p class="forgot-password">Mot de passe oublié</p>
+      </a>
 
 			<button type="submit">Se connecter</button>
 		</form>
@@ -216,6 +216,10 @@
 		padding: 0.5rem;
 		border-radius: 5px;
 		border: 1px solid #ccc;
+	}
+
+	.forgot-password {
+		font-size: 0.8rem;
 	}
 
 	@media (max-width: 768px) {
