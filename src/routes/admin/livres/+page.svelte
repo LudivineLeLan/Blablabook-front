@@ -22,3 +22,5 @@
 		</li>
 	{/each}
 </ul>
+
+<a href="/admin"><button>Retour</button></a>

@@ -21,7 +21,9 @@
 </svelte:head>
 
 <div class="layout">
-	<Header />
+	{#if !$page.url.pathname.startsWith('/admin')}
+		<Header />
+	{/if}
 	<main class="main-content">
 		{#if $page.status && $page.status >= 400}
 			{@render children?.('error')}

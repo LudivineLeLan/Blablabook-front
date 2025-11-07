@@ -73,8 +73,18 @@
 			</div>
 		{/each}
 
-		<button type="submit">Enregistrer les modifications</button>
+		<div class="choice-buttons">
+			<button type="submit">Enregistrer les modifications</button>
+			<a href="/admin/livres"><button>Retour</button></a>
+		</div>
 	</form>
 {:else}
 	<p>Livre introuvable.</p>
 {/if}
+
+<style>
+	.choice-buttons {
+		display: flex;
+		flex-direction: row;
+	}
+</style>
