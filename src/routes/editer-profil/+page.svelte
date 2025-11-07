@@ -71,6 +71,31 @@
 			errorMessage = err.message || 'Une erreur est survenue.';
 		}
 	}
+
+	async function deleteAccount(currentUser) {
+		try {
+			const token = localStorage.getItem('token');
+			const response = await fetch(`http://localhost:3000/user/${currentUser.id}`, {
+				method: 'DELETE',
+				headers: { Authorization: `Bearer ${token}` }
+			});
+
+			if (response.ok) {
+				user.set(null);
+				localStorage.removeItem('token');
+
+				if (window.location.pathname !== '/') {
+					window.location.href = '/';
+				}
+			} else {
+				errorMessage = `Impossible de supprimer le compte (code ${response.status})`;
+				console.error(errorMessage);
+			}
+		} catch (error) {
+			console.error(error);
+			errorMessage = error.message || 'Une erreur est survenue.';
+		}
+	}
 </script>
 
 {#if currentUser}
@@ -187,5 +212,4 @@
 		border: none;
 		box-shadow: none;
 	}
-
 </style>
