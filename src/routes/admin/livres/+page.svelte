@@ -16,7 +16,9 @@
 			{:else}
 				<p>Auteur inconnu</p>
 			{/if}
+      <a href={`/admin/livres/${book.id}`}>
 			<img src={book.cover} alt={`Couverture de ${book.title}`} width="150" />
+      </a>
 		</li>
 	{/each}
 </ul>
