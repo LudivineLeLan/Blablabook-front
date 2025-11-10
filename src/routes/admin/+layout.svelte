@@ -9,7 +9,6 @@
 		document.body.classList.toggle('dark-mode', darkMode);
 		localStorage.setItem('darkMode', darkMode);
 	}
-
 </script>
 
 <header class="header">
@@ -110,5 +109,14 @@
 	.dark-mode:hover {
 		transform: translateY(-2px);
 		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+	}
+
+	@media (max-width: 728px) {
+		.user-actions {
+			flex-direction: column;
+			gap: 0.3rem;
+			align-items: center;
+			width: auto;
+		}
 	}
 </style>

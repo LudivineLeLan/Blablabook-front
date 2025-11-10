@@ -1,10 +1,15 @@
 <script>
+	import { goto } from '$app/navigation';
 	export let data;
 	let book = data.book;
 	let coverFile = null;
+	let errorMessage = '';
+	let successMessage = '';
 
 	async function submitForm(event) {
 		event.preventDefault();
+		errorMessage = '';
+		successMessage = '';
 
 		const formData = new FormData();
 		formData.append('title', book.title);
@@ -26,13 +31,13 @@
 			});
 
 			if (response.ok) {
-				alert('Le livre a été mis à jour avec succès !');
+				successMessage = 'Le livre a été mis à jour avec succès !';
 			} else {
-				alert('Erreur lors de la mise à jour du livre.');
+				errorMessage = data.message || 'Erreur lors de la mise à jour du livre.';
 			}
 		} catch (error) {
 			console.error(error);
-			alert('Une erreur est survenue.');
+			errorMessage = 'Une erreur est survenue.';
 		}
 	}
 
@@ -73,7 +78,7 @@
 
 		<div class="choice-buttons">
 			<button type="submit">Enregistrer les modifications</button>
-			<button type="button" onclick={() => goto('/admin/livres')}>Retour</button>
+			<a href="/admin/livres"><button type="button">Retour</button></a>
 		</div>
 	</form>
 {:else}
