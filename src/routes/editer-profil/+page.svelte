@@ -72,30 +72,29 @@
 		}
 	}
 
-	async function deleteAccount(currentUser) {
-		try {
-			const token = localStorage.getItem('token');
-			const response = await fetch(`http://localhost:3000/user/${currentUser.id}`, {
-				method: 'DELETE',
-				headers: { Authorization: `Bearer ${token}` }
-			});
+	async function deleteAccount() {
+	try {
+		const token = localStorage.getItem('token');
+		const response = await fetch(`http://localhost:3000/user/${currentUser.id}`, {
+			method: 'DELETE',
+			headers: { Authorization: `Bearer ${token}` }
+		});
 
-			if (response.ok) {
-				user.set(null);
-				localStorage.removeItem('token');
+		const data = await response.json();
 
-				if (window.location.pathname !== '/') {
-					window.location.href = '/';
-				}
-			} else {
-				errorMessage = `Impossible de supprimer le compte (code ${response.status})`;
-				console.error(errorMessage);
-			}
-		} catch (error) {
-			console.error(error);
-			errorMessage = error.message || 'Une erreur est survenue.';
+		if (response.ok) {
+			user.set(null);
+			localStorage.removeItem('token');
+			goto('/');
+		} else {
+			errorMessage = data.error || 'Impossible de supprimer le compte.';
 		}
+	} catch (error) {
+		console.error(error);
+		errorMessage = error.message || 'Une erreur est survenue.';
 	}
+}
+
 </script>
 
 {#if currentUser}
