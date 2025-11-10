@@ -1,11 +1,17 @@
 <script>
 	import Icon from '@iconify/svelte';
-	import { goto } from '$app/navigation';
+	import { onMount } from 'svelte';
 
 	export let data;
-	let users = data.users;
+	let users = [];
 	let showModal = null;
+	let editingUserId = null;
+	let selectedRole = '';
 	let errorMessage = '';
+
+	onMount(() => {
+		users = [...data.users];
+	});
 
 	async function deleteUserAccount(id) {
 		try {
@@ -28,6 +34,32 @@
 			errorMessage = error.message || 'Une erreur est survenue.';
 		}
 	}
+
+	async function updateUserRole(id) {
+		try {
+			const token = localStorage.getItem('token');
+			const response = await fetch(`http://localhost:3000/admin/users/${id}`, {
+				method: 'PATCH',
+				headers: {
+					Authorization: `Bearer ${token}`,
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ role: selectedRole })
+			});
+
+			const data = await response.json();
+
+			if (response.ok) {
+				users = users.map((user) => (user.id === id ? { ...user, role: selectedRole } : user));
+				editingUserId = null;
+			} else {
+				errorMessage = data.error || 'Erreur lors de la mise à jour du rôle.';
+			}
+		} catch (error) {
+			console.error(error);
+			errorMessage = error.message || 'Une erreur est survenue.';
+		}
+	}
 </script>
 
 <h1>Liste des utilisateurs</h1>
@@ -39,17 +71,37 @@
 		{#each users as user}
 			<li>
 				<div class="user-line">
-					<span>{user.name} {user.firstname} - {user.email} - rôle: {user.role}</span>
-					<div class="icons">
-						<Icon icon="material-symbols:edit-outline" width="20" height="20" class="edit-button" />
-						<Icon
-							icon="material-symbols:delete"
-							width="20"
-							height="20"
-							class="delete-button"
-							onclick={() => (showModal = user.id)}
-						/>
-					</div>
+					<span>{user.name} {user.firstname} - {user.email}</span>
+
+					{#if editingUserId === user.id}
+						<select bind:value={selectedRole}>
+							<option value="user">user</option>
+							<option value="admin">admin</option>
+						</select>
+						<button onclick={() => updateUserRole(user.id)}>✔️</button>
+						<button onclick={() => (editingUserId = null)}>❌</button>
+					{:else}
+						<span>rôle : {user.role}</span>
+						<div class="icons">
+							<Icon
+								icon="material-symbols:edit-outline"
+								width="20"
+								height="20"
+								class="edit-button"
+								onclick={() => {
+									editingUserId = user.id;
+									selectedRole = user.role;
+								}}
+							/>
+							<Icon
+								icon="material-symbols:delete"
+								width="20"
+								height="20"
+								class="delete-button"
+								onclick={() => (showModal = user.id)}
+							/>
+						</div>
+					{/if}
 				</div>
 
 				{#if showModal === user.id}
@@ -86,18 +138,18 @@
 	.user-line {
 		display: flex;
 		align-items: center;
+		gap: 1rem;
+		flex-wrap: wrap;
 	}
 
 	.icons {
 		display: flex;
 		align-items: center;
 		gap: 0.5rem;
-		cursor: pointer;
 	}
 
-	.modal-buttons {
-		display: flex;
-		gap: 0.5rem;
-		margin-top: 0.5rem;
+	select {
+		padding: 0.3rem;
+		border-radius: 6px;
 	}
 </style>
