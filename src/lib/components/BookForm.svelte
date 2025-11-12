@@ -1,0 +1,168 @@
+<script>
+	import { goto } from '$app/navigation';
+
+	export let book = null; // null = création
+	export let mode = 'create'; // 'create' ou 'edit'
+
+	let coverFile = null;
+	let errorMessage = '';
+	let successMessage = '';
+
+	// Initialisation pour éviter que {#each} plante
+	let formBook = book || {
+		title: '',
+		synopsis: '',
+		authors: [{ firstname: '', name: '', bio: '' }],
+		cover: ''
+	};
+
+	async function submitForm(event) {
+		event.preventDefault();
+		errorMessage = '';
+		successMessage = '';
+
+		const formData = new FormData();
+		formData.append('title', formBook.title);
+		formData.append('synopsis', formBook.synopsis);
+		if (coverFile) formData.append('cover', coverFile);
+		formData.append('authors', JSON.stringify(formBook.authors));
+
+		const token = localStorage.getItem('token');
+		const url =
+			mode === 'edit'
+				? `http://localhost:3000/admin/books/${formBook.id}`
+				: `http://localhost:3000/admin/books`;
+		const method = mode === 'edit' ? 'PUT' : 'POST';
+
+		try {
+			const response = await fetch(url, {
+				method,
+				headers: { Authorization: `Bearer ${token}` },
+				body: formData
+			});
+			const data = await response.json();
+
+			if (response.ok) {
+				successMessage =
+					mode === 'edit'
+						? 'Le livre a été mis à jour avec succès !'
+						: 'Le livre a été créé avec succès !';
+
+				if (mode === 'create') goto(`/admin/livres/${data.book.id}`);
+			} else {
+				errorMessage = data.message || 'Erreur lors de l’envoi du formulaire.';
+			}
+		} catch (err) {
+			console.error(err);
+			errorMessage = 'Une erreur est survenue.';
+		}
+	}
+
+	function handleCoverChange(event) {
+		coverFile = event.target.files[0];
+	}
+</script>
+
+<form onsubmit={submitForm}>
+	<div class="book-edition">
+		<label>
+			Titre :
+			<input type="text" bind:value={formBook.title} required />
+		</label>
+
+		<label>
+			Synopsis :
+			<textarea bind:value={formBook.synopsis}></textarea>
+		</label>
+
+		{#if mode === 'edit' && formBook.cover}
+			<div class="cover-preview">
+				<p>Couverture actuelle :</p>
+				<img src={formBook.cover} alt={`Couverture ${formBook.title}`} width="150" />
+			</div>
+		{/if}
+
+		<label for="coverFile">Changer la couverture :</label>
+		<input id="coverFile" type="file" accept="image/*" onchange={handleCoverChange} />
+
+		<label>Auteur(s) :</label>
+		{#each formBook.authors as author, index}
+			<div class="author-fields">
+				<input type="text" bind:value={author.firstname} placeholder="Prénom" required />
+				<input type="text" bind:value={author.name} placeholder="Nom" required />
+				<textarea bind:value={author.bio} placeholder="Biographie"></textarea>
+			</div>
+		{/each}
+	</div>
+
+	<div class="choice-buttons">
+		<button type="submit">
+			{mode === 'edit' ? 'Enregistrer les modifications' : 'Créer le livre'}
+		</button>
+		{#if mode === 'edit'}
+			<button type="button" class="delete-button" onclick={deleteBook}> Supprimer le livre </button>
+		{/if}
+		<a href="/admin/livres"><button type="button">Retour</button></a>
+	</div>
+
+	{#if successMessage}
+		<p class="success">{successMessage}</p>
+	{/if}
+	{#if errorMessage}
+		<p class="error">{errorMessage}</p>
+	{/if}
+</form>
+
+<style>
+	.book-edition {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+		width: 100%;
+		max-width: 600px;
+		margin: 0 auto;
+		padding: 0 1rem;
+	}
+
+	.book-edition label {
+		display: flex;
+		flex-direction: column;
+		font-weight: bold;
+		font-size: 0.9rem;
+		width: 100%;
+	}
+
+	.book-edition input,
+	.book-edition textarea {
+		width: 100%;
+		box-sizing: border-box;
+		padding: 0.5rem;
+		border: 1px solid #ccc;
+		border-radius: 5px;
+	}
+
+	.author-fields {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		margin-bottom: 1rem;
+	}
+
+	.choice-buttons {
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		gap: 1rem;
+		margin-top: 1rem;
+	}
+
+	.success {
+		color: green;
+		margin-top: 1rem;
+	}
+
+	.error {
+		color: red;
+		margin-top: 1rem;
+	}
+</style>

@@ -27,7 +27,10 @@
 	</ul>
 </div>
 
-<a href="/admin"><button>Retour</button></a>
+<div class="choice-buttons">
+	<a href="/admin"><button>Retour</button></a>
+	<a href="/admin/ajouter-livre"><button>Ajouter un livre</button></a>
+</div>
 
 <style>
 	.books-list ul {
@@ -63,11 +66,18 @@
 		margin-bottom: 2rem;
 	}
 
-	a button {
+	.choice-buttons {
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		gap: 1rem;
+		margin-top: 1rem;
+	}
+
+	button {
 		margin: 2rem auto;
 		display: block;
 		padding: 0.5rem 1rem;
-		border-radius: 8px;
 		font-weight: bold;
 		cursor: pointer;
 	}
