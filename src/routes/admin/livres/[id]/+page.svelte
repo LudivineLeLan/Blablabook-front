@@ -31,6 +31,8 @@
 			});
 
 			if (response.ok) {
+				const updated = await response.json();
+				book = { ...book, ...updated.book }; // on met à jour le livre affiché
 				successMessage = 'Le livre a été mis à jour avec succès !';
 			} else {
 				errorMessage = data.message || 'Erreur lors de la mise à jour du livre.';
@@ -58,14 +60,14 @@
 				Synopsis :
 				<textarea bind:value={book.synopsis}></textarea>
 			</label>
-			<label>
-				Couverture actuelle :
-				<img src={book.cover} alt={`Couverture ${book.title}`} width="150" />
-			</label>
-			<label>
-				Changer la couverture :
-				<input type="file" accept="image/*" onchange={handleCoverChange} />
-			</label>
+			<div class="cover-section">
+				<p>Couverture actuelle :</p>
+				<img src={book.cover} alt={`Couverture de ${book.title}`} width="150" />
+
+				<label for="cover">Changer la couverture :</label>
+				<input id="cover" type="file" accept="image/*" onchange={handleCoverChange} />
+			</div>
+
 			<h3>Auteurs :</h3>
 			{#each book.authors as author, index}
 				<div>
