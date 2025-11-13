@@ -1,8 +1,9 @@
 <script>
 	import { goto } from '$app/navigation';
 
-	export let book = null; // null = création
-	export let mode = 'create'; // 'create' ou 'edit'
+	export let book = null;
+	export const mode = book === null ? 'create' : 'edit';
+	export let authors = [];
 
 	let coverFile = null;
 	let errorMessage = '';
@@ -12,7 +13,7 @@
 	let formBook = book || {
 		title: '',
 		synopsis: '',
-		authors: [{ firstname: '', name: '', bio: '' }],
+		authors: [],
 		cover: ''
 	};
 
@@ -86,18 +87,17 @@
 		<input id="coverFile" type="file" accept="image/*" onchange={handleCoverChange} />
 
 		<label>Auteur(s) :</label>
-		{#each formBook.authors as author, index}
-			<div class="author-fields">
-				<input type="text" bind:value={author.firstname} placeholder="Prénom" required />
-				<input type="text" bind:value={author.name} placeholder="Nom" required />
-				<textarea bind:value={author.bio} placeholder="Biographie"></textarea>
-			</div>
-		{/each}
+
+		<select id="authors" name="auteur" multiple value={formBook.authors.map((author) => author.id)}>
+			{#each authors as author}
+				<option value={author.id}> {author.firstname} {author.name} </option>
+			{/each}
+		</select>
 	</div>
 
 	<div class="choice-buttons">
 		<button type="submit">
-			{mode === 'edit' ? 'Enregistrer les modifications' : 'Créer le livre'}
+			{mode === 'edit' ? 'Enregistrer les modifications' : 'Ajouter le livre'}
 		</button>
 		{#if mode === 'edit'}
 			<button type="button" class="delete-button" onclick={deleteBook}> Supprimer le livre </button>
@@ -159,10 +159,12 @@
 	.success {
 		color: green;
 		margin-top: 1rem;
+		text-align: center;
 	}
 
 	.error {
 		color: red;
 		margin-top: 1rem;
+		text-align: center;
 	}
 </style>

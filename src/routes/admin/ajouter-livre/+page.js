@@ -1,8 +1,8 @@
 import { browser } from '$app/environment';
-import { user } from '../../../../lib/stores/auth.js';
+import { user } from '../../../lib/stores/auth.js';
 import { get } from 'svelte/store';
 
-export async function load({ fetch, params }) {
+export async function load({ fetch }) {
   if (!browser) return { users: [] };
 
   const currentUser = get(user);
@@ -14,13 +14,6 @@ export async function load({ fetch, params }) {
   }
 
   try {
-    const bookResponse = await fetch(`http://localhost:3000/book/${params.id}`, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      }
-    });
-
     const authorsResponse = await fetch(`http://localhost:3000/authors`, {
       headers: {
         'Content-Type': 'application/json',
@@ -28,18 +21,15 @@ export async function load({ fetch, params }) {
       }
     });
 
-    if (!bookResponse.ok || !authorsResponse.ok) {
-      console.log(bookResponse, authorsResponse)
+    if (!authorsResponse.ok) {
       throw new Error(`Erreur API`);
     }
 
-    const book = await bookResponse.json();
     const authors = await authorsResponse.json();
-    console.log(authors)
 
-    return { book, authors };
+    return { authors };
   } catch (error) {
     console.error(error);
-    return { book: null };
+    return { authors : []};
   }
 }
