@@ -18,6 +18,7 @@
 	};
 
 	async function submitForm(event) {
+		console.log(formBook.authors);
 		event.preventDefault();
 		errorMessage = '';
 		successMessage = '';
@@ -88,7 +89,7 @@
 
 		<label>Auteur(s) :</label>
 
-		<select id="authors" name="auteur" multiple value={formBook.authors.map((author) => author.id)}>
+		<select id="authors" name="auteur" multiple bind:value={formBook.authors}>
 			{#each authors as author}
 				<option value={author.id}> {author.firstname} {author.name} </option>
 			{/each}
