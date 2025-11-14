@@ -3,15 +3,18 @@ import { user } from '../../../lib/stores/auth.js';
 import { get } from 'svelte/store';
 
 export async function load({ fetch }) {
-  if (!browser) return { users: [] };
+  if (!browser) return { authors: [], genres: [] };
 
   const currentUser = get(user);
   const token = currentUser?.token || localStorage.getItem('token');
 
   if (!token) {
     console.log("Aucun token trouvé");
-    return { book: null };
+    return { authors: [], genres: [] };
   }
+
+  let authors = [];
+  let genres = [];
 
   try {
     const authorsResponse = await fetch(`http://localhost:3000/authors`, {
@@ -21,15 +24,22 @@ export async function load({ fetch }) {
       }
     });
 
-    if (!authorsResponse.ok) {
-      throw new Error(`Erreur API`);
+    const genresResponse = await fetch(`http://localhost:3000/genres`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    if (!authorsResponse.ok || !genresResponse.ok) {
+      throw new Error('Erreur API');
     }
 
-    const authors = await authorsResponse.json();
-
-    return { authors };
+    authors = await authorsResponse.json();
+    genres = await genresResponse.json();
   } catch (error) {
     console.error(error);
-    return { authors : []};
   }
+
+  return { authors, genres };
 }

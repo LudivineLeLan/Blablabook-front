@@ -4,6 +4,7 @@
 	export let book = null;
 	export const mode = book === null ? 'create' : 'edit';
 	export let authors = [];
+	export let genres = [];
 
 	let coverFile = null;
 	let errorMessage = '';
@@ -13,9 +14,21 @@
 	let formBook = book || {
 		title: '',
 		synopsis: '',
+		genres: [],
 		authors: [],
 		cover: ''
 	};
+
+  $: if (book) {
+    formBook = {
+      id: book.id,
+      title: book.title,
+      synopsis: book.synopsis,
+      cover: book.cover,
+      genres: book.genres.map(genre => genre.id),     
+      authors: book.authors.map(auteur => auteur.id)    
+    };
+  }
 
 	async function submitForm(event) {
 		console.log(formBook.authors);
@@ -26,6 +39,7 @@
 		const formData = new FormData();
 		formData.append('title', formBook.title);
 		formData.append('synopsis', formBook.synopsis);
+		formData.append('genre', formBook.genre);
 		if (coverFile) formData.append('cover', coverFile);
 		formData.append('authors', JSON.stringify(formBook.authors));
 
@@ -60,6 +74,7 @@
 		}
 	}
 
+
 	function handleCoverChange(event) {
 		coverFile = event.target.files[0];
 	}
@@ -76,6 +91,14 @@
 			Synopsis :
 			<textarea bind:value={formBook.synopsis}></textarea>
 		</label>
+
+		<label>Genre(s) :</label>
+
+		<select id="genres" name="genre" multiple bind:value={formBook.genres}>
+			{#each genres as genre}
+				<option value={genre.id}> {genre.name} </option>
+			{/each}
+		</select>
 
 		{#if mode === 'edit' && formBook.cover}
 			<div class="cover-preview">

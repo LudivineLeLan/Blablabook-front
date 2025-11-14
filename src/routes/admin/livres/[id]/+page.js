@@ -28,16 +28,24 @@ export async function load({ fetch, params }) {
       }
     });
 
-    if (!bookResponse.ok || !authorsResponse.ok) {
+    const genresResponse = await fetch(`http://localhost:3000/genres`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    if (!bookResponse.ok || !authorsResponse.ok || !genresResponse.ok) {
       console.log(bookResponse, authorsResponse)
       throw new Error(`Erreur API`);
     }
 
     const book = await bookResponse.json();
     const authors = await authorsResponse.json();
+    const genres = await genresResponse.json();
     console.log(authors)
 
-    return { book, authors };
+    return { book, authors, genres };
   } catch (error) {
     console.error(error);
     return { book: null };
