@@ -16,7 +16,7 @@
 	async function deleteUserAccount(id) {
 		try {
 			const token = localStorage.getItem('token');
-			const response = await fetch(`http://localhost:3000/admin/users/${id}`, {
+			const response = await fetch(`${import.meta.env.VITE_API_URL}/admin/users/${id}`, {
 				method: 'DELETE',
 				headers: { Authorization: `Bearer ${token}` }
 			});
@@ -38,7 +38,7 @@
 	async function updateUserRole(id) {
 		try {
 			const token = localStorage.getItem('token');
-			const response = await fetch(`http://localhost:3000/admin/users/${id}`, {
+			const response = await fetch(`${import.meta.env.VITE_API_URL}/admin/users/${id}`, {
 				method: 'PATCH',
 				headers: {
 					Authorization: `Bearer ${token}`,

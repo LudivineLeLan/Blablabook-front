@@ -1,5 +1,5 @@
 export async function load({ params }) {
-  const res = await fetch(`http://localhost:3000/book/${params.id}`);
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/book/${params.id}`);
   const book = await res.json();
 
   console.log(book);

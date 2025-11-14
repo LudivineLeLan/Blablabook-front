@@ -45,8 +45,8 @@
 		const token = localStorage.getItem('token');
 		const url =
 			mode === 'edit'
-				? `http://localhost:3000/admin/books/${formBook.id}`
-				: `http://localhost:3000/admin/books`;
+				? `${import.meta.env.VITE_API_URL}/admin/books/${formBook.id}`
+				: `${import.meta.env.VITE_API_URL}/admin/books`;
 		const method = mode === 'edit' ? 'PUT' : 'POST';
 
 		try {
@@ -80,7 +80,7 @@
 	async function deleteBook(id) {
 		try {
 			const token = localStorage.getItem('token');
-			const response = await fetch(`http://localhost:3000/admin/books/${id}`, {
+			const response = await fetch(`${import.meta.env.VITE_API_URL}/admin/books/${id}`, {
 				method: 'DELETE',
 				headers: { Authorization: `Bearer ${token}` }
 			});

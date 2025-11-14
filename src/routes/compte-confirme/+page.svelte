@@ -1,40 +1,39 @@
 <script>
-  import { goto } from '$app/navigation';
-  import { page } from '$app/stores';
-  import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
+	import { onMount } from 'svelte';
 
-  let message = 'Confirmation en cours...';
+	let message = 'Confirmation en cours...';
 
-  onMount(async () => {
-    const token = $page.url.searchParams.get('token'); 
-    if (!token) {
-      message = "Lien invalide.";
-      return;
-    }
+	onMount(async () => {
+		const token = $page.url.searchParams.get('token');
+		if (!token) {
+			message = 'Lien invalide.';
+			return;
+		}
 
-    try {
-      const res = await fetch(`http://localhost:3000/confirm/${token}`);
-      const data = await res.json();
-      message = res.ok ? 'Votre compte est validé!' : data.error;
-    } catch (error) {
-      message = 'Erreur lors de la confirmation.';
-    }
-  });
+		try {
+			const res = await fetch(`${import.meta.env.VITE_API_URL}/confirm/${token}`);
+			const data = await res.json();
+			message = res.ok ? 'Votre compte est validé!' : data.error;
+		} catch (error) {
+			message = 'Erreur lors de la confirmation.';
+		}
+	});
 
-  function goToLogin() {
-    goto('/connexion');
-  }
+	function goToLogin() {
+		goto('/connexion');
+	}
 </script>
 
 <h1>{message}</h1>
 {#if message === 'Votre compte est validé!'}
-  <button onclick={goToLogin}>Se connecter</button>
+	<button onclick={goToLogin}>Se connecter</button>
 {/if}
 
-
 <style>
-  button {
-    max-width: 70%;
-    margin: auto;
-  }
+	button {
+		max-width: 70%;
+		margin: auto;
+	}
 </style>

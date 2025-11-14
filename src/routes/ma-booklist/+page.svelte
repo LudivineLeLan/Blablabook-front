@@ -37,7 +37,7 @@
 
 		try {
 			const response = await fetch(
-				`http://localhost:3000/user/${decodedToken.id}/book/${book.book.id}`,
+				`${import.meta.env.VITE_API_URL}/user/${decodedToken.id}/book/${book.book.id}`,
 				{
 					method: 'PUT',
 					headers: {
@@ -77,9 +77,12 @@
 		}
 
 		try {
-			const res = await fetch(`http://localhost:3000/userbooks?page=${pageNumber}&limit=${limit}`, {
-				headers: { Authorization: `Bearer ${token}` }
-			});
+			const res = await fetch(
+				`${import.meta.env.VITE_API_URL}/userbooks?page=${pageNumber}&limit=${limit}`,
+				{
+					headers: { Authorization: `Bearer ${token}` }
+				}
+			);
 
 			if (!res.ok) throw new Error('Erreur lors de la récupération des livres');
 
@@ -114,7 +117,7 @@
 			console.log(`Suppression du livre: ${book.book.title}`);
 
 			const response = await fetch(
-				`http://localhost:3000/user/${decodedToken.id}/book/${book.book.id}`,
+				`${import.meta.env.VITE_API_URL}/user/${decodedToken.id}/book/${book.book.id}`,
 				{
 					method: 'DELETE',
 					headers: {

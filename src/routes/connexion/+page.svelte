@@ -12,7 +12,7 @@
 
 		const formData = new FormData(event.target);
 
-		const res = await fetch('http://localhost:3000/user/login', {
+		const res = await fetch('${import.meta.env.VITE_API_URL}/user/login', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({
@@ -46,7 +46,7 @@
 		}
 
 		// Envoi des données d'inscription au backend
-		const res = await fetch('http://localhost:3000/user/register', {
+		const res = await fetch('${import.meta.env.VITE_API_URL}/user/register', {
 			method: 'POST',
 			body: formData
 		});
@@ -128,8 +128,8 @@
 			<label for="password">Mot de passe :</label>
 			<input type="password" name="password" id="password" required />
 			<a href="/motdepasse-oublie">
-        <p class="forgot-password">Mot de passe oublié</p>
-      </a>
+				<p class="forgot-password">Mot de passe oublié</p>
+			</a>
 
 			<button type="submit">Se connecter</button>
 		</form>

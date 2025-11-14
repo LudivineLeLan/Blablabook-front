@@ -33,7 +33,7 @@ describe('load function page d’accueil', () => {
     const result = await load();
 
     // Vérifier que fetch a bien été appelé avec l’URL attendue
-    expect(global.fetch).toHaveBeenCalledWith('http://localhost:3000/');
+    expect(global.fetch).toHaveBeenCalledWith('${import.meta.env.VITE_API_URL}/');
 
     // Vérifier que le résultat contient les livres fake
     expect(result).toEqual({ book: fakeBooks });

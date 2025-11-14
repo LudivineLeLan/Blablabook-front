@@ -30,7 +30,7 @@
 
 		try {
 			const response = await fetch(
-				`http://localhost:3000/user/${decodedToken.id}/book/${data.book.id}/status`,
+				`${import.meta.env.VITE_API_URL}/user/${decodedToken.id}/book/${data.book.id}/status`,
 				{
 					headers: {
 						Authorization: `Bearer ${token}`,
@@ -73,7 +73,7 @@
 		try {
 			if (inBooklist) {
 				const response = await fetch(
-					`http://localhost:3000/user/${decodedToken.id}/book/${data.book.id}`,
+					`${import.meta.env.VITE_API_URL}/user/${decodedToken.id}/book/${data.book.id}`,
 					{
 						method: 'DELETE',
 						headers: {
@@ -92,7 +92,7 @@
 				}
 			} else {
 				const response = await fetch(
-					`http://localhost:3000/user/${decodedToken.id}/book/${data.book.id}`,
+					`${import.meta.env.VITE_API_URL}/user/${decodedToken.id}/book/${data.book.id}`,
 					{
 						method: 'POST',
 						headers: {
@@ -145,7 +145,7 @@
 		isReadLoading = true;
 		try {
 			const response = await fetch(
-				`http://localhost:3000/user/${decodedToken.id}/book/${data.book.id}`,
+				`${import.meta.env.VITE_API_URL}/user/${decodedToken.id}/book/${data.book.id}`,
 				{
 					method: 'PUT',
 					headers: {

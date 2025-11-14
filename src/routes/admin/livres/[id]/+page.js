@@ -14,21 +14,21 @@ export async function load({ fetch, params }) {
   }
 
   try {
-    const bookResponse = await fetch(`http://localhost:3000/book/${params.id}`, {
+    const bookResponse = await fetch(`${import.meta.env.VITE_API_URL}/book/${params.id}`, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       }
     });
 
-    const authorsResponse = await fetch(`http://localhost:3000/authors`, {
+    const authorsResponse = await fetch(`${import.meta.env.VITE_API_URL}/authors`, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       }
     });
 
-    const genresResponse = await fetch(`http://localhost:3000/genres`, {
+    const genresResponse = await fetch(`${import.meta.env.VITE_API_URL}/genres`, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`

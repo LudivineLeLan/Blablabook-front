@@ -22,7 +22,7 @@
 				import.meta.env.VITE_EMAILJS_TEMPLATE_ID_CONFIRM,
 				{
 					email: email,
-					confirm_link: `http://localhost:3000/confirm/${token}`
+					confirm_link: `${import.meta.env.VITE_API_URL}/confirm/${token}`
 				},
 				import.meta.env.VITE_EMAILJS_PUBLIC_KEY
 			);

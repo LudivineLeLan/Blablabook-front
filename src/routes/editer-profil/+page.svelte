@@ -14,7 +14,7 @@
 			return;
 		}
 		try {
-			const res = await fetch('http://localhost:3000/auth/me', {
+			const res = await fetch('${import.meta.env.VITE_API_URL}/auth/me', {
 				headers: { Authorization: `Bearer ${token}` }
 			});
 			if (!res.ok) throw new Error('Impossible de récupérer les informations utilisateur');
@@ -52,7 +52,7 @@
 		}
 
 		try {
-			const res = await fetch(`http://localhost:3000/user/${currentUser.id}`, {
+			const res = await fetch(`${import.meta.env.VITE_API_URL}/user/${currentUser.id}`, {
 				method: 'PATCH',
 				headers: { Authorization: `Bearer ${token}` },
 				body: formData
@@ -73,28 +73,27 @@
 	}
 
 	async function deleteAccount() {
-	try {
-		const token = localStorage.getItem('token');
-		const response = await fetch(`http://localhost:3000/user/${currentUser.id}`, {
-			method: 'DELETE',
-			headers: { Authorization: `Bearer ${token}` }
-		});
+		try {
+			const token = localStorage.getItem('token');
+			const response = await fetch(`${import.meta.env.VITE_API_URL}/user/${currentUser.id}`, {
+				method: 'DELETE',
+				headers: { Authorization: `Bearer ${token}` }
+			});
 
-		const data = await response.json();
+			const data = await response.json();
 
-		if (response.ok) {
-			user.set(null);
-			localStorage.removeItem('token');
-			goto('/');
-		} else {
-			errorMessage = data.error || 'Impossible de supprimer le compte.';
+			if (response.ok) {
+				user.set(null);
+				localStorage.removeItem('token');
+				goto('/');
+			} else {
+				errorMessage = data.error || 'Impossible de supprimer le compte.';
+			}
+		} catch (error) {
+			console.error(error);
+			errorMessage = error.message || 'Une erreur est survenue.';
 		}
-	} catch (error) {
-		console.error(error);
-		errorMessage = error.message || 'Une erreur est survenue.';
 	}
-}
-
 </script>
 
 {#if currentUser}
