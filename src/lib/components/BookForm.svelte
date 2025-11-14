@@ -19,19 +19,18 @@
 		cover: ''
 	};
 
-  $: if (book) {
-    formBook = {
-      id: book.id,
-      title: book.title,
-      synopsis: book.synopsis,
-      cover: book.cover,
-      genres: book.genres.map(genre => genre.id),     
-      authors: book.authors.map(auteur => auteur.id)    
-    };
-  }
+	$: if (book) {
+		formBook = {
+			id: book.id,
+			title: book.title,
+			synopsis: book.synopsis,
+			cover: book.cover,
+			genres: book.genres.map((genre) => genre.id),
+			authors: book.authors.map((auteur) => auteur.id)
+		};
+	}
 
 	async function submitForm(event) {
-		console.log(formBook.authors);
 		event.preventDefault();
 		errorMessage = '';
 		successMessage = '';
@@ -39,7 +38,7 @@
 		const formData = new FormData();
 		formData.append('title', formBook.title);
 		formData.append('synopsis', formBook.synopsis);
-		formData.append('genre', formBook.genre);
+		formData.append('genre', formBook.genres);
 		if (coverFile) formData.append('cover', coverFile);
 		formData.append('authors', JSON.stringify(formBook.authors));
 
@@ -74,9 +73,29 @@
 		}
 	}
 
-
 	function handleCoverChange(event) {
 		coverFile = event.target.files[0];
+	}
+
+	async function deleteBook(id) {
+		try {
+			const token = localStorage.getItem('token');
+			const response = await fetch(`http://localhost:3000/admin/books/${id}`, {
+				method: 'DELETE',
+				headers: { Authorization: `Bearer ${token}` }
+			});
+
+			const data = await response.json();
+
+			if (response.ok) {
+				goto('/admin/livres');
+			} else {
+				errorMessage = data.error || 'Impossible de supprimer le livre.';
+			}
+		} catch (error) {
+			console.error(error);
+			errorMessage = error.message || 'Une erreur est survenue.';
+		}
 	}
 </script>
 
@@ -124,7 +143,9 @@
 			{mode === 'edit' ? 'Enregistrer les modifications' : 'Ajouter le livre'}
 		</button>
 		{#if mode === 'edit'}
-			<button type="button" class="delete-button" onclick={deleteBook}> Supprimer le livre </button>
+			<button type="button" class="delete-button" onclick={() => deleteBook(book.id)}>
+				Supprimer le livre
+			</button>
 		{/if}
 		<a href="/admin/livres"><button type="button">Retour</button></a>
 	</div>
