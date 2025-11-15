@@ -1,7 +1,7 @@
 export const getSearchSuggestions = async (query, type, signal) => {
   if (!query) return [];
 
-  const url = new URL('${import.meta.env.VITE_API_URL}/search'); //on créer l'URL de la recherche
+  const url = new URL(`${import.meta.env.VITE_API_URL}/search`); //on créer l'URL de la recherche
   url.searchParams.set('q', query);
   if (type) url.searchParams.set('type', type); // si auteur ou genre recherché, filtrer la recherche
 

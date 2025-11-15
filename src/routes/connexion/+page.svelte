@@ -12,7 +12,7 @@
 
 		const formData = new FormData(event.target);
 
-		const res = await fetch('${import.meta.env.VITE_API_URL}/user/login', {
+		const res = await fetch(`${import.meta.env.VITE_API_URL}/user/login`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({
@@ -46,7 +46,7 @@
 		}
 
 		// Envoi des données d'inscription au backend
-		const res = await fetch('${import.meta.env.VITE_API_URL}/user/register', {
+		const res = await fetch(`${import.meta.env.VITE_API_URL}/user/register`, {
 			method: 'POST',
 			body: formData
 		});

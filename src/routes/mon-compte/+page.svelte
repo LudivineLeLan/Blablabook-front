@@ -17,7 +17,7 @@
 
 		try {
 			// Récupération des infos utilisateur
-			const userResponse = await fetch('${import.meta.env.VITE_API_URL}/auth/me', {
+			const userResponse = await fetch(`${import.meta.env.VITE_API_URL}/auth/me`, {
 				headers: { Authorization: `Bearer ${token}` }
 			});
 

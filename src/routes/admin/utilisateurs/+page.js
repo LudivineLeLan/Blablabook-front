@@ -14,7 +14,7 @@ export async function load({ fetch }) {
   }
 
   try {
-    const res = await fetch('${import.meta.env.VITE_API_URL}/admin/users', {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/admin/users`, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`

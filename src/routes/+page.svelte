@@ -7,7 +7,7 @@
 
 	<div class="carousel-container">
 		<div class="carousel-track">
-			{#each data.book.concat(data.book) as book}
+			{#each data.book/* .concat(data.book) */ as book}
 				<!-- concat = double tableau pour liste de livres infinis -->
 				<a href={`/livre/${book.id}`} class="slide">
 					<img src={book.cover} alt={book.title} />
