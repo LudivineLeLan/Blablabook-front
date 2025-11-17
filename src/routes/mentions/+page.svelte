@@ -22,10 +22,8 @@
 	<h2>Hébergement</h2>
 	<p>
 		Le site est hébergé par :
-		<strong>o2switch</strong> — hébergeur français. Pour plus d’informations, consultez
-		<a href="https://www.o2switch.fr" target="_blank" rel="noopener noreferrer"
-			>https://www.o2switch.fr</a
-		>.
+		<strong>Render</strong>. Pour plus d’informations, consultez
+		<a href="https://render.com" target="_blank" rel="noopener noreferrer">https://render.com</a>.
 	</p>
 
 	<h2>Propriété intellectuelle</h2>

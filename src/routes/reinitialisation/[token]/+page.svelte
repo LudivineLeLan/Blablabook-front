@@ -10,7 +10,6 @@
 	let error = '';
 
 	onMount(() => {
-		// Récupère le token depuis l'URL
 		const params = get(page).params;
 		token = params.token || '';
 	});
