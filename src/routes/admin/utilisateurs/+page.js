@@ -3,13 +3,12 @@ import { user } from '../../../lib/stores/auth.js';
 import { get } from 'svelte/store';
 
 export async function load({ fetch }) {
-  if (!browser) return { users: [] }; // côté serveur on ne fait rien
+  if (!browser) return { users: [] }; 
 
   const currentUser = get(user);
   const token = currentUser?.token || localStorage.getItem('token');
 
   if (!token) {
-    console.log("Aucun token trouvé");
     return { users: [] };
   }
 

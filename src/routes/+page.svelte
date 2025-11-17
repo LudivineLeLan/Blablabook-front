@@ -49,8 +49,8 @@
 		gap: 1rem;
 		animation: scroll 110s linear infinite;
 	}
-	/* animation du carrousel */
-	@keyframes scroll {
+
+  @keyframes scroll {
 		from {
 			transform: translateX(0);
 		}

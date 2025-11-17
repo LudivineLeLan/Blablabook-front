@@ -10,7 +10,6 @@
 	let errorMessage = '';
 	let successMessage = '';
 
-	// Initialisation pour éviter que {#each} plante
 	let formBook = book || {
 		title: '',
 		synopsis: '',
@@ -184,13 +183,6 @@
 		padding: 0.5rem;
 		border: 1px solid #ccc;
 		border-radius: 5px;
-	}
-
-	.author-fields {
-		display: flex;
-		flex-direction: column;
-		gap: 0.5rem;
-		margin-bottom: 1rem;
 	}
 
 	.choice-buttons {

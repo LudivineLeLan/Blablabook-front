@@ -16,7 +16,6 @@
 		}
 
 		try {
-			// Récupération des infos utilisateur
 			const userResponse = await fetch(`${import.meta.env.VITE_API_URL}/auth/me`, {
 				headers: { Authorization: `Bearer ${token}` }
 			});
@@ -27,7 +26,6 @@
 
 			currentUser = await userResponse.json();
 
-			// Récupération des livres favoris
 			const booksResponse = await fetch(`${import.meta.env.VITE_API_URL}/userbooks?limit=4`, {
 				headers: { Authorization: `Bearer ${token}` }
 			});

@@ -9,7 +9,6 @@ export async function load({ fetch, params }) {
   const token = currentUser?.token || localStorage.getItem('token');
 
   if (!token) {
-    console.log("Aucun token trouvé");
     return { book: null };
   }
 
@@ -36,14 +35,12 @@ export async function load({ fetch, params }) {
     });
 
     if (!bookResponse.ok || !authorsResponse.ok || !genresResponse.ok) {
-      console.log(bookResponse, authorsResponse)
       throw new Error(`Erreur API`);
     }
 
     const book = await bookResponse.json();
     const authors = await authorsResponse.json();
     const genres = await genresResponse.json();
-    console.log(authors)
 
     return { book, authors, genres };
   } catch (error) {

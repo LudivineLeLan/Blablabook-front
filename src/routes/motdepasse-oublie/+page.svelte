@@ -20,7 +20,6 @@
 		}
 
 		try {
-			// appeler le backend pour générer le token
 			const res = await fetch(`${import.meta.env.VITE_API_URL}/forgot-password`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
@@ -34,10 +33,8 @@
 				return;
 			}
 
-			// créer le lien avec le token
 			const resetLink = `http://localhost:5173/reinitialisation/${data.token}`;
 
-			// envoyer le mail via EmailJS
 			await emailjs.send(
 				import.meta.env.VITE_EMAILJS_SERVICE_ID,
 				import.meta.env.VITE_EMAILJS_TEMPLATE_ID_RESET,
@@ -51,7 +48,7 @@
 			console.error(error);
 			error = 'Erreur lors de l’envoi du mail.';
 		} finally {
-			sending = false; // on reset après l’envoi
+			sending = false; 
 		}
 	}
 </script>

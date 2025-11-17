@@ -1,5 +1,5 @@
 <script>
-	import { debounce } from '$lib/utils/debounce.js'; //permet de limiter le nombre d'exécution d'une fonction en l'exécutant une seule fois
+	import { debounce } from '$lib/utils/debounce.js'; 
 	import { getSearchSuggestions } from '$lib/remoteFunction.js';
 	import { goto } from '$app/navigation';
 	import { user, logout } from '$lib/stores/auth.js';
@@ -11,15 +11,14 @@
 	let showSuggestions = $state(false);
 	let searchType = $state('');
 
-	let abortController = null; // Contrôleur d'annulation pour les requêtes en cours
-	let currentSearchQuery = ''; // Permet d’éviter d’afficher les résultats d’une ancienne recherche
+	let abortController = null; 
+	let currentSearchQuery = ''; 
 
 	let darkMode = $state(false);
 
 	async function performSearch(searchQuery) {
-		if (abortController) abortController.abort(); // Si une requête est déjà en cours, on l’annule avant d’en lancer une nouvelle
+		if (abortController) abortController.abort(); 
 
-		// Si requête moins de 2 caractères, il ne se passe rien
 		if (!searchQuery || searchQuery.length < 2) {
 			suggestions = [];
 			loading = false;
@@ -27,7 +26,6 @@
 			currentSearchQuery = '';
 			return;
 		}
-		// On sauvegarde la requête actuelle et on prépare un nouveau contrôleur d’annulation
 		currentSearchQuery = searchQuery;
 		abortController = new AbortController();
 		loading = true;
@@ -48,11 +46,11 @@
 				suggestions = [];
 			}
 		} finally {
-			if (searchQuery === currentSearchQuery) loading = false; //on annule le chargement quand la requête est terminée
+			if (searchQuery === currentSearchQuery) loading = false; 
 		}
 	}
 
-	const debouncedSearch = debounce(performSearch, 300); // On crée une version "debounced" de performSearch (attend 300ms d’inactivité avant d’exécuter)
+	const debouncedSearch = debounce(performSearch, 300); 
 
 	function onInput(event) {
 		query = event.target.value;
@@ -66,12 +64,11 @@
 
 	function handleFocus() {
 		if (query.length >= 2 && suggestions.length > 0) {
-			showSuggestions = true; //on affiche les suggestions lorsque la requête >2 caractères
+			showSuggestions = true; 
 		}
 	}
 
 	function handleBlur() {
-		// évite à la liste de suggestion de se fermer trop vite lorsque l'utilisateur clique sur un livre
 		setTimeout(() => {
 			showSuggestions = false;
 		}, 200);
@@ -83,22 +80,17 @@
 
 			const trimmedQuery = query.trim();
 
-			// Si la recherche est vide, ne rien faire
 			if (!trimmedQuery) {
 				return;
 			}
 
-			// Si on a des suggestions et qu'on voit la dropdown, aller au premier résultat
 			if (showSuggestions && suggestions.length > 0) {
 				openBook(suggestions[0].id);
 			} else if (trimmedQuery.length >= 2) {
-				// Sinon, rediriger vers le catalogue avec la recherche
 				goto(`/catalogue?search=${encodeURIComponent(trimmedQuery)}`);
-				// Vider la barre de recherche et nettoyer l'état
 				clearSearch();
 			}
 		} else if (event.key === 'Escape') {
-			// Échapper ferme les suggestions
 			clearSearch();
 		}
 	}
@@ -125,7 +117,6 @@
 			<p class="title"><a href="/">BlaBlaBook</a></p>
 		</div>
 
-		<!-- Condition pour afficher les bons boutons selon l'état de connexion -->
 		<div class="auth-buttons">
 			<button class="dark-mode" onclick={toggle}>{darkMode ? '☀️' : '🌙'}</button>
 			{#if $user}
@@ -138,7 +129,6 @@
 					<button class="connection-btn logout-btn" onclick={() => logout()}>Déconnexion</button>
 				</div>
 			{:else}
-				<!-- Utilisateur non connecté -->
 				<div class="btn-container">
 					<a href="/connexion">
 						<button class="connection-btn">Connexion</button>
@@ -182,7 +172,6 @@
 								<button onclick={() => openBook(book.id)} class="suggestion-item">
 									{#if book.cover}
 										<img src={book.cover} alt={book.title} class="book-thumb" />
-										<!-- thumb = aperçu -->
 									{/if}
 
 									<div class="book-info">

@@ -51,7 +51,6 @@
 	}
 
 	async function toggleBooklist() {
-		// Redirection si non connecté
 		if (!$user) {
 			goto('/connexion');
 			return;
@@ -119,7 +118,6 @@
 	}
 
 	async function toggleRead() {
-		// Redirection si non connecté
 		if (!$user) {
 			goto('/connexion');
 			return;
@@ -169,18 +167,17 @@
 		}
 	}
 
-	let unsubscribe; // On stocke la fonction pour se désabonner du store plus tard
-	let hasInitialized = false; // Pour ne lancer `checkBookStatus()` qu'une seule fois
+	let unsubscribe; 
+	let hasInitialized = false; 
 
 	onMount(() => {
 		getBookStatus('dummy', new Map());
 
 		unsubscribe = booklistStatus.subscribe((map) => {
-			const bookIdString = String(data.book.id); // Convertir l'ID du livre en string car les clés de la Map sont des strings
+			const bookIdString = String(data.book.id);
 			const status = getBookStatus(bookIdString, map);
 
 			if (map.has(bookIdString)) {
-				// Si le livre est déjà dans le store, mettre à jour les variables locales
 				inBooklist = status.inBooklist;
 				toRead = status.toRead;
 			} else if (!hasInitialized) {
@@ -238,7 +235,6 @@
 </div>
 
 <div class="buttons-container">
-	<!-- Bouton ajouter/retirer de la booklist -->
 	<button
 		class="add-booklist"
 		class:in-booklist={inBooklist}
@@ -255,7 +251,6 @@
 		{/if}
 	</button>
 
-	<!-- Bouton "J'ai lu" - seulement si dans la booklist -->
 	{#if inBooklist}
 		<button
 			class="read"
@@ -398,7 +393,6 @@
 		color: var(--couleur-marron);
 	}
 
-	/* Icônes de bookmark - identiques à celles de la booklist */
 	.material-symbols--bookmark-added-grey {
 		display: inline-block;
 		width: 2rem;
@@ -417,7 +411,6 @@
 		background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%2363A6A6' d='M17.825 9L15 6.175l1.4-1.425l1.425 1.425l3.525-3.55l1.425 1.425zM5 21V5q0-.825.588-1.412T7 3h7q-.5.75-.75 1.438T13 6q0 1.8 1.138 3.175T17 10.9q.575.075 1 .075t1-.075V21l-7-3z'/%3E%3C/svg%3E");
 	}
 
-	/* Icônes PNG - même taille que les bookmarks */
 	.icon {
 		width: 2rem;
 		height: 2rem;

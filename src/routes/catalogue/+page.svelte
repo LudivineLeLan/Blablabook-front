@@ -5,12 +5,12 @@
 	import { user } from '$lib/stores/auth.js';
 	import { booklistStatus, updateBookStatus, getBookStatus } from '$lib/stores/booklistStore.js';
 
-	let loadingBooks = $state(new Set()); //set = comme un tableau mais avec éléments uniques et méthodes spécifiques
+	let loadingBooks = $state(new Set()); 
 
 	function decodeJWT(token) {
 		try {
-			const payload = token.split('.')[1]; //payload = infos sur user, permissions, id etc
-			const decoded = JSON.parse(atob(payload)); //atob = fonction JS pour décrypter les JWT encodés en Base64
+			const payload = token.split('.')[1]; 
+			const decoded = JSON.parse(atob(payload)); 
 			return decoded;
 		} catch (error) {
 			console.error('Erreur décodage JWT:', error);
@@ -36,11 +36,9 @@
 		const booksToCheck = data.books.filter((book) => !currentStoreMap.has(String(book.id)));
 
 		if (booksToCheck.length === 0) {
-			console.log('Tous les statuts sont déjà en cache');
 			return;
 		}
 
-		// On récupère le statut pour chaque livre via l’API
 		const promises = booksToCheck.map(async (book) => {
 			try {
 				const response = await fetch(
@@ -65,7 +63,7 @@
 			}
 		});
 
-		await Promise.all(promises); // Attente que toutes les requêtes soient terminées
+		await Promise.all(promises); 
 	}
 
 	async function toggleBookInBooklist(book) {
@@ -86,7 +84,6 @@
 			return;
 		}
 
-		// Récupération du statut actuel
 		let currentStatus = { inBooklist: false, toRead: true };
 		booklistStatus.subscribe((map) => {
 			currentStatus = getBookStatus(String(book.id), map);
@@ -137,7 +134,6 @@
 	}
 
 	onMount(() => {
-		// Vérifier les statuts seulement si connecté
 		if ($user) {
 			checkAllBooksStatus();
 		}
@@ -165,7 +161,6 @@
 					</p>
 				</div>
 
-				<!-- Bouton qui redirige vers /connexion si non connecté -->
 				<button
 					class="add-button"
 					class:in-booklist={$booklistStatus.get(String(book.id))?.inBooklist || false}

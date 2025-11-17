@@ -58,7 +58,7 @@
 		height: auto;
 		display: block;
 		margin: 0 auto 0.5rem;
-		align-self: start; /* force l'image à rester en haut de la cellule */
+		align-self: start;
 	}
 
 	h1 {

@@ -45,7 +45,6 @@
 			return;
 		}
 
-		// Envoi des données d'inscription au backend
 		const res = await fetch(`${import.meta.env.VITE_API_URL}/user/register`, {
 			method: 'POST',
 			body: formData
@@ -54,14 +53,13 @@
 		const data = await res.json();
 
 		if (res.ok) {
-			// Envoi du mail de confirmation via EmailJS
 			try {
 				await emailjs.send(
 					import.meta.env.VITE_EMAILJS_SERVICE_ID,
 					import.meta.env.VITE_EMAILJS_TEMPLATE_ID_CONFIRM,
 					{
 						email: formData.get('email'),
-						confirm_link: data.confirmLink // valeur renvoyée par backend
+						confirm_link: data.confirmLink 
 					},
 					import.meta.env.VITE_EMAILJS_PUBLIC_KEY
 				);
@@ -69,7 +67,6 @@
 				localStorage.setItem('pending_email', formData.get('email'));
 				localStorage.setItem('pending_token', data.token);
 
-				console.log('Mail de confirmation envoyé !');
 				goto('/compte-cree');
 			} catch (error) {
 				console.error('Erreur lors de l’envoi EmailJS :', error);

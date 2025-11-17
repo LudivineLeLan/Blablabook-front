@@ -9,7 +9,6 @@ export async function load({ fetch }) {
   const token = currentUser?.token || localStorage.getItem('token');
 
   if (!token) {
-    console.log("Aucun token trouvé");
     return { books: [] };
   }
 

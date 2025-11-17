@@ -27,7 +27,6 @@
 				import.meta.env.VITE_EMAILJS_PUBLIC_KEY
 			);
 
-			console.log('Email renvoyé avec succès :', result.status, result.text);
 		} catch (error) {
 			console.error('Erreur lors du renvoi EmailJS :', error);
 		}

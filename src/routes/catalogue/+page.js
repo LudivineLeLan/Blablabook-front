@@ -5,7 +5,7 @@ export async function load({ fetch, url }) {
 
   let apiUrl = `${import.meta.env.VITE_API_URL}/catalog?page=${page}&limit=${limit}`;
   if (search) {
-    apiUrl += `&search=${encodeURIComponent(search)}`; //si recherche, on ajoute le terme dans l'URL 
+    apiUrl += `&search=${encodeURIComponent(search)}`; 
   }
 
   const res = await fetch(apiUrl);

@@ -1,11 +1,11 @@
 export const getSearchSuggestions = async (query, type, signal) => {
   if (!query) return [];
 
-  const url = new URL(`${import.meta.env.VITE_API_URL}/search`); //on créer l'URL de la recherche
+  const url = new URL(`${import.meta.env.VITE_API_URL}/search`);
   url.searchParams.set('q', query);
-  if (type) url.searchParams.set('type', type); // si auteur ou genre recherché, filtrer la recherche
+  if (type) url.searchParams.set('type', type);
 
-  const res = await fetch(url, { signal }); // on passe signal pour pouvoir annuler la requête si une nouvelle recherche est effectuée
+  const res = await fetch(url, { signal });
 
   if (!res.ok) throw new Error('Recherche échouée');
 
