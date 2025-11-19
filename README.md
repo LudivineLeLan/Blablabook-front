@@ -84,3 +84,4 @@ Puis créer un fichier ```.env``` à la racine du dossier backend en se basant s
 
 ##  Déploiement
 Le site est déployé sur [https://blablabook-2025.onrender.com](https://blablabook-2025.onrender.com/)
+⚠️ Les serveurs sommeillent côté Render, actualisez la page du projet pour les réveiller !
