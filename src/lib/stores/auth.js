@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-
+import { goto } from '$app/navigation';
 import { browser } from '$app/environment';
 
 export const user = writable(null);
@@ -44,11 +44,9 @@ export function logout() {
     import('./booklistStore.js').then(({ clearBooklistStatus }) => {
       clearBooklistStatus();
     });
-  }
 
-
-
-  if (browser && window.location.pathname !== '/') {
-    window.location.href = '/';
+    if (window.location.pathname !== '/') {
+      goto('/');
+    }
   }
 }
