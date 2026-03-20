@@ -38,6 +38,7 @@
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
-    "@iconify/svelte": "^5.1.0"
+    "@iconify/svelte": "^5.1.0",
+    "lucide-svelte": "^0.577.0"
   }
 }

@@ -1,155 +1,129 @@
 <script>
-	import Icon from '@iconify/svelte';
-	import { onMount } from 'svelte';
+  import { Pencil, Trash2, Check, X, ChevronLeft } from 'lucide-svelte';
+  import { onMount } from 'svelte';
+  import { PUBLIC_API_URL } from '$env/static/public';
 
-	export let data;
-	let users = [];
-	let showModal = null;
-	let editingUserId = null;
-	let selectedRole = '';
-	let errorMessage = '';
+  export let data;
+  let users = [];
+  let showModal = null;
+  let editingUserId = null;
+  let selectedRole = '';
+  let errorMessage = '';
 
-	onMount(() => {
-		users = [...data.users];
-	});
+  onMount(() => {
+    users = [...data.users];
+  });
 
-	async function deleteUserAccount(id) {
-		try {
-			const token = localStorage.getItem('token');
-			const response = await fetch(`${import.meta.env.VITE_API_URL}/admin/users/${id}`, {
-				method: 'DELETE',
-				headers: { Authorization: `Bearer ${token}` }
-			});
+  function getInitials(name, firstname) {
+    return `${firstname?.[0] ?? ''}${name?.[0] ?? ''}`.toUpperCase();
+  }
 
-			const data = await response.json();
+  async function deleteUserAccount(id) {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${PUBLIC_API_URL}/admin/users/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const result = await response.json();
+      if (response.ok) {
+        users = users.filter((user) => user.id !== id);
+        showModal = null;
+      } else {
+        errorMessage = result.error || 'Impossible de supprimer le compte.';
+      }
+    } catch (error) {
+      errorMessage = 'Une erreur est survenue.';
+    }
+  }
 
-			if (response.ok) {
-				users = users.filter((user) => user.id !== id);
-				showModal = null;
-			} else {
-				errorMessage = data.error || 'Impossible de supprimer le compte.';
-			}
-		} catch (error) {
-			console.error(error);
-			errorMessage = error.message || 'Une erreur est survenue.';
-		}
-	}
-
-	async function updateUserRole(id) {
-		try {
-			const token = localStorage.getItem('token');
-			const response = await fetch(`${import.meta.env.VITE_API_URL}/admin/users/${id}`, {
-				method: 'PATCH',
-				headers: {
-					Authorization: `Bearer ${token}`,
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({ role: selectedRole })
-			});
-
-			const data = await response.json();
-
-			if (response.ok) {
-				users = users.map((user) => (user.id === id ? { ...user, role: selectedRole } : user));
-				editingUserId = null;
-			} else {
-				errorMessage = data.error || 'Erreur lors de la mise à jour du rôle.';
-			}
-		} catch (error) {
-			console.error(error);
-			errorMessage = error.message || 'Une erreur est survenue.';
-		}
-	}
+  async function updateUserRole(id) {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${PUBLIC_API_URL}/admin/users/${id}`, {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ role: selectedRole })
+      });
+      const result = await response.json();
+      if (response.ok) {
+        users = users.map((user) => (user.id === id ? { ...user, role: selectedRole } : u));
+        editingUserId = null;
+      } else {
+        errorMessage = result.error || 'Erreur lors de la mise à jour du rôle.';
+      }
+    } catch (error) {
+      errorMessage = 'Une erreur est survenue.';
+    }
+  }
 </script>
 
-<h1>Liste des utilisateurs</h1>
+<div class="page">
+  <div class="header">
+    <h1>Gestion des utilisateurs</h1>
+    <span class="count">{users.length} utilisateurs</span>
+  </div>
 
-{#if users.length === 0}
-	<p>Aucun utilisateur trouvé.</p>
-{:else}
-	<ul>
-		{#each users as user}
-			<li>
-				<div class="user-line">
-					<span>{user.name} {user.firstname} - {user.email}</span>
+  {#if errorMessage}
+    <p class="error">{errorMessage}</p>
+  {/if}
 
-					{#if editingUserId === user.id}
-						<select bind:value={selectedRole}>
-							<option value="user">user</option>
-							<option value="admin">admin</option>
-						</select>
-						<button onclick={() => updateUserRole(user.id)}>✔️</button>
-						<button onclick={() => (editingUserId = null)}>❌</button>
-					{:else}
-						<span>rôle : {user.role}</span>
-						<div class="icons">
-							<Icon
-								icon="material-symbols:edit-outline"
-								width="20"
-								height="20"
-								class="edit-button"
-								onclick={() => {
-									editingUserId = user.id;
-									selectedRole = user.role;
-								}}
-							/>
-							<Icon
-								icon="material-symbols:delete"
-								width="20"
-								height="20"
-								class="delete-button"
-								onclick={() => (showModal = user.id)}
-							/>
-						</div>
-					{/if}
-				</div>
+  {#if users.length === 0}
+    <p class="empty">Aucun utilisateur trouvé.</p>
+  {:else}
+    {#each users as user}
+      <div class="user-card">
+        <div class="avatar" class:admin={user.role === 'admin'}>
+          {getInitials(user.name, user.firstname)}
+        </div>
 
-				{#if showModal === user.id}
-					<div class="modal-container">
-						<div class="modal">
-							<p>Êtes-vous sûr de vouloir supprimer ce compte ?</p>
-							<div class="modal-buttons">
-								<button class="confirmDeletion" onclick={() => deleteUserAccount(user.id)}
-									>Oui, supprimer</button
-								>
-								<button class="cancelDeletion" onclick={() => (showModal = null)}>Annuler</button>
-							</div>
-						</div>
-					</div>
-				{/if}
-			</li>
-		{/each}
-	</ul>
-{/if}
+        <div class="user-info">
+          <span class="user-name">{user.firstname} {user.name}</span>
+          <span class="user-email">{user.email}</span>
+        </div>
 
-<a href="/admin"><button>Retour</button></a>
+        {#if editingUserId === user.id}
+          <select bind:value={selectedRole}>
+            <option value="user">user</option>
+            <option value="admin">admin</option>
+          </select>
+          <button class="icon-btn confirm" onclick={() => updateUserRole(user.id)}>
+            <Check size={14} />
+          </button>
+          <button class="icon-btn" onclick={() => (editingUserId = null)}>
+            <X size={14} />
+          </button>
+        {:else}
+          <span class="badge {user.role}">{user.role}</span>
+          <div class="actions">
+            <button class="icon-btn" onclick={() => { editingUserId = user.id; selectedRole = user.role; }}>
+              <Pencil size={14} />
+            </button>
+            <button class="icon-btn danger" onclick={() => (showModal = user.id)}>
+              <Trash2 size={14} />
+            </button>
+          </div>
+        {/if}
+      </div>
 
-<style>
-	ul {
-		list-style-type: none;
-		padding: 0;
-	}
+      {#if showModal === user.id}
+        <div class="modal-overlay">
+          <div class="modal">
+            <p>Supprimer le compte de <strong>{user.firstname} {user.name}</strong> ?</p>
+            <div class="modal-actions">
+              <button class="btn-ghost" onclick={() => (showModal = null)}>Annuler</button>
+              <button class="btn-danger" onclick={() => deleteUserAccount(user.id)}>Supprimer</button>
+            </div>
+          </div>
+        </div>
+      {/if}
+    {/each}
+  {/if}
 
-	li {
-		margin: 1rem 0;
-		max-width: 70%;
-	}
-
-	.user-line {
-		display: flex;
-		align-items: center;
-		gap: 1rem;
-		flex-wrap: wrap;
-	}
-
-	.icons {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-	}
-
-	select {
-		padding: 0.3rem;
-		border-radius: 6px;
-	}
-</style>
+  <a href="/admin" class="back-link">
+    <ChevronLeft size={14} /> Retour
+  </a>
+</div>
