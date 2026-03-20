@@ -1,7 +1,7 @@
 <script>
   import { Pencil, Trash2, Check, X, ChevronLeft } from 'lucide-svelte';
   import { onMount } from 'svelte';
-  import { PUBLIC_API_URL } from '$env/static/public';
+	import.meta.env.VITE_API_URL
 
   export let data;
   let users = [];
@@ -21,7 +21,7 @@
   async function deleteUserAccount(id) {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`${PUBLIC_API_URL}/admin/users/${id}`, {
+      const response = await fetch(`${VITE_API_URL}/admin/users/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -40,7 +40,7 @@
   async function updateUserRole(id) {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`${PUBLIC_API_URL}/admin/users/${id}`, {
+      const response = await fetch(`${VITE_API_URL}/admin/users/${id}`, {
         method: 'PATCH',
         headers: {
           Authorization: `Bearer ${token}`,
