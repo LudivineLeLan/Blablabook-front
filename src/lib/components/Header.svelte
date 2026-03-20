@@ -125,13 +125,15 @@
 						<button class="connection-btn account-btn">Mon compte</button>
 					</a>
 				</div>
-				{#if $user.role === 'admin'}
-        <div class="btn-container">
-            <a href="/admin">
-                <button class="connection-btn admin-btn">Administration</button>
-            </a>
-        </div>
-    {/if}
+				{#if $user?.role === 'admin'}
+    <div class="btn-container">
+        <a href="/admin">
+            <button class="connection-btn admin-btn">
+                Administration
+            </button>
+        </a>
+    </div>
+{/if}
 				<div class="btn-container btn-container-start">
 					<button class="connection-btn logout-btn" onclick={() => logout()}>Déconnexion</button>
 				</div>

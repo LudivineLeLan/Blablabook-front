@@ -1,7 +1,10 @@
 <script>
-	import { user, logout } from '$lib/stores/auth.js';
+	import { onMount } from 'svelte';
+	import { get } from 'svelte/store';
+	import { user, loadUserFromToken, logout } from '$lib/stores/auth.js';
 	import { goto } from '$app/navigation';
 
+	let checked = false;
 	let darkMode = false;
 
 	function toggleDarkMode() {
@@ -9,35 +12,49 @@
 		document.body.classList.toggle('dark-mode', darkMode);
 		localStorage.setItem('darkMode', darkMode);
 	}
+
+	onMount(async () => {
+		await loadUserFromToken();
+
+		const currentUser = get(user);
+		if (!currentUser || currentUser.role !== 'admin') {
+			goto('/');
+			return;
+		}
+
+		checked = true;
+	});
 </script>
 
-<header class="header">
-	<div class="header-top">
-		<div class="logo-title">
-			<a href="/admin"><img src="/LogoBBB.png" alt="Logo BlaBlaBook" class="logo-icon" /></a>
-			<p class="title"><a href="/admin">BlaBlaBook</a></p>
-		</div>
+{#if checked}
+	<header class="header">
+		<div class="header-top">
+			<div class="logo-title">
+				<a href="/admin"><img src="/LogoBBB.png" alt="Logo BlaBlaBook" class="logo-icon" /></a>
+				<p class="title"><a href="/admin">BlaBlaBook</a></p>
+			</div>
 
-		<div class="auth-buttons">
-			{#if $user}
-				<div class="user-actions">
-					<button class="connection-btn" onclick={() => goto('/mon-compte')}>Mon compte</button>
-					<button class="connection-btn logout-btn" onclick={() => logout()}>Déconnexion</button>
-					<button class="dark-mode" onclick={toggleDarkMode}>{darkMode ? '☀️' : '🌙'}</button>
-				</div>
-			{:else}
-				<div class="user-actions">
-					<button class="connection-btn" onclick={() => goto('/connexion')}>Connexion</button>
-					<button class="dark-mode" onclick={toggleDarkMode}>{darkMode ? '☀️' : '🌙'}</button>
-				</div>
-			{/if}
+			<div class="auth-buttons">
+				{#if $user}
+					<div class="user-actions">
+						<button class="connection-btn" onclick={() => goto('/mon-compte')}>Mon compte</button>
+						<button class="connection-btn logout-btn" onclick={() => logout()}>Déconnexion</button>
+						<button class="dark-mode" onclick={toggleDarkMode}>{darkMode ? '☀️' : '🌙'}</button>
+					</div>
+				{:else}
+					<div class="user-actions">
+						<button class="connection-btn" onclick={() => goto('/connexion')}>Connexion</button>
+						<button class="dark-mode" onclick={toggleDarkMode}>{darkMode ? '☀️' : '🌙'}</button>
+					</div>
+				{/if}
+			</div>
 		</div>
-	</div>
-</header>
+	</header>
 
-<main class="admin-main">
-	<slot />
-</main>
+	<main class="admin-main">
+		<slot />
+	</main>
+{/if}
 
 <style>
 	header {
