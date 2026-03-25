@@ -1,6 +1,8 @@
 import { browser } from '$app/environment';
 import { user } from '../../../lib/stores/auth.js';
 import { get } from 'svelte/store';
+import { env } from '$env/dynamic/public';
+
 
 export async function load({ fetch }) {
   if (!browser) return { users: [] };
@@ -13,7 +15,7 @@ export async function load({ fetch }) {
   }
 
   try {
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/admin/books`, {
+    const res = await fetch(`${env.PUBLIC_API_URL}/admin/books`, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`

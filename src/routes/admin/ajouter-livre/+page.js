@@ -1,6 +1,8 @@
 import { browser } from '$app/environment';
 import { user } from '../../../lib/stores/auth.js';
 import { get } from 'svelte/store';
+import { env } from '$env/dynamic/public';
+
 
 export async function load({ fetch }) {
   if (!browser) return { authors: [], genres: [] };
@@ -16,14 +18,14 @@ export async function load({ fetch }) {
   let genres = [];
 
   try {
-    const authorsResponse = await fetch(`${import.meta.env.VITE_API_URL}/authors`, {
+    const authorsResponse = await fetch(`${env.PUBLIC_API_URL}/authors`, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       }
     });
 
-    const genresResponse = await fetch(`${import.meta.env.VITE_API_URL}/genres`, {
+    const genresResponse = await fetch(`${env.PUBLIC_API_URL}/genres`, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
