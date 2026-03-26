@@ -3,9 +3,41 @@
 	import { user } from '$lib/stores/auth.js';
 	import emailjs from '@emailjs/browser';
 
-	let isLogin = $state(true);
-	let errorMessage = $state('');
+	let isLogin = true;
+	let errorMessage = '';
 
+	// ----- REGISTER FORM -----
+	let name = '';
+	let firstname = '';
+	let age = '';
+	let email = '';
+	let password = '';
+	let confirm = '';
+	let avatar = null;
+
+	// Regex et warnings
+	$: nameWarning = name.length > 0 && (name.length < 2 || name.length > 30) 
+		? 'Le nom doit contenir entre 2 et 30 caractères' : '';
+
+	$: firstnameWarning = firstname.length > 0 && (firstname.length < 2 || firstname.length > 30) 
+		? 'Le prénom doit contenir entre 2 et 30 caractères' : '';
+
+	$: ageWarning = age && (age < 0 || age > 120) 
+		? 'L’âge doit être compris entre 0 et 120' : '';
+
+	$: emailRegex = /^[^\s@]+@[^\s@]+\.(com|net|fr)$/i;
+	$: emailWarning = email.length > 0 && !emailRegex.test(email) 
+		? 'L’email doit être valide' : '';
+
+	$: passwordRegex = /^[\p{L}\p{N}!@#$%^&*()_+\-=[\]{}|;:'",.<>?/]{8,30}$/u;
+	$: passwordWarning = password.length > 0 && !passwordRegex.test(password) 
+		? 'Le mot de passe doit contenir 8 à 30 caractères et peut inclure lettres, chiffres et symboles !@#$%^&*()_+-=[]{}|;:\'",.<>?/' 
+		: '';
+
+	$: confirmWarning = confirm.length > 0 && confirm !== password
+		? 'Les mots de passe ne correspondent pas' : '';
+
+	// ----- LOGIN -----
 	async function Login(event) {
 		event.preventDefault();
 		errorMessage = '';
@@ -32,18 +64,24 @@
 		}
 	}
 
+	// ----- REGISTER -----
 	async function Register(event) {
 		event.preventDefault();
 		errorMessage = '';
 
-		const formData = new FormData(event.target);
-		const password = formData.get('password');
-		const confirm = formData.get('confirm');
-
-		if (password !== confirm) {
-			errorMessage = 'Les mots de passe ne correspondent pas';
+		// Vérification frontend avant fetch
+		if (nameWarning || firstnameWarning || ageWarning || emailWarning || passwordWarning || confirmWarning) {
+			errorMessage = 'Veuillez corriger les erreurs ci-dessus avant de continuer.';
 			return;
 		}
+
+		const formData = new FormData();
+		formData.append('name', name);
+		formData.append('firstname', firstname);
+		formData.append('age', age);
+		formData.append('email', email);
+		formData.append('password', password);
+		formData.append('avatar', avatar);
 
 		const res = await fetch(`${import.meta.env.VITE_API_URL}/user/register`, {
 			method: 'POST',
@@ -58,13 +96,13 @@
 					import.meta.env.VITE_EMAILJS_SERVICE_ID,
 					import.meta.env.VITE_EMAILJS_TEMPLATE_ID_CONFIRM,
 					{
-						email: formData.get('email'),
+						email: email,
 						confirm_link: data.confirmLink 
 					},
 					import.meta.env.VITE_EMAILJS_PUBLIC_KEY
 				);
 
-				localStorage.setItem('pending_email', formData.get('email'));
+				localStorage.setItem('pending_email', email);
 				localStorage.setItem('pending_token', data.token);
 
 				goto('/compte-cree');
@@ -79,87 +117,78 @@
 </script>
 
 <div class="auth-container">
+	<!-- Onglets -->
 	<div class="tabs" role="tablist" aria-label="Choix du mode d’authentification">
 		<button
 			role="tab"
-			id="tab-login"
 			class:active={isLogin}
 			aria-selected={isLogin}
 			aria-controls="panel-login"
-			aria-label="Onglet de connexion"
-			tabindex="0"
-			onclick={() => (isLogin = true)}
-		>
-			Connexion
-		</button>
+			on:click={() => isLogin = true}
+		>Connexion</button>
 
 		<button
 			role="tab"
-			id="tab-register"
 			class:active={!isLogin}
 			aria-selected={!isLogin}
 			aria-controls="panel-register"
-			aria-label="Onglet de création de compte"
-			tabindex="0"
-			onclick={() => (isLogin = false)}
-		>
-			Création de compte
-		</button>
+			on:click={() => isLogin = false}
+		>Création de compte</button>
 	</div>
 
 	{#if errorMessage}
-		<p style="color: red; text-align: center; margin-bottom: 1rem;">{errorMessage}</p>
+		<p class="error">{errorMessage}</p>
 	{/if}
 
-	<div
-		id="panel-login"
-		role="tabpanel"
-		aria-labelledby="tab-login"
-		tabindex={isLogin ? 0 : -1}
-		hidden={!isLogin}
-	>
-		<form onsubmit={Login}>
-			<label for="email">Email :</label>
-			<input type="email" name="email" id="email" required />
-
-			<label for="password">Mot de passe :</label>
-			<input type="password" name="password" id="password" required />
-			<a href="/motdepasse-oublie">
-				<p class="forgot-password">Mot de passe oublié</p>
-			</a>
-
+	<!-- LOGIN PANEL -->
+	<div id="panel-login" role="tabpanel" aria-labelledby="tab-login" tabindex={isLogin ? 0 : -1} hidden={!isLogin}>
+		<form on:submit={Login}>
+			<label>Email :
+				<input type="email" name="email" required />
+			</label>
+			<label>Mot de passe :
+				<input type="password" name="password" required />
+			</label>
 			<button type="submit">Se connecter</button>
 		</form>
 	</div>
 
-	<div
-		id="panel-register"
-		role="tabpanel"
-		aria-labelledby="tab-register"
-		tabindex={!isLogin ? 0 : -1}
-		hidden={isLogin}
-	>
-		<form onsubmit={Register} enctype="multipart/form-data">
-			<label for="name">Nom :</label>
-			<input type="text" name="name" id="name" required />
+	<!-- REGISTER PANEL -->
+	<div id="panel-register" role="tabpanel" aria-labelledby="tab-register" tabindex={!isLogin ? 0 : -1} hidden={isLogin}>
+		<form on:submit={Register} enctype="multipart/form-data">
+			<label>Nom :
+				<input type="text" bind:value={name} required />
+				{#if nameWarning}<p class="warning">{nameWarning}</p>{/if}
+			</label>
 
-			<label for="firstname">Prénom :</label>
-			<input type="text" name="firstname" id="firstname" required />
+			<label>Prénom :
+				<input type="text" bind:value={firstname} required />
+				{#if firstnameWarning}<p class="warning">{firstnameWarning}</p>{/if}
+			</label>
 
-			<label for="age">Âge :</label>
-			<input type="number" name="age" id="age" min="0" required />
+			<label>Âge :
+				<input type="number" bind:value={age} min="0" max="120" required />
+				{#if ageWarning}<p class="warning">{ageWarning}</p>{/if}
+			</label>
 
-			<label for="emailSignup">Email :</label>
-			<input type="email" name="email" id="emailSignup" required />
+			<label>Email :
+				<input type="email" bind:value={email} required />
+				{#if emailWarning}<p class="warning">{emailWarning}</p>{/if}
+			</label>
 
-			<label for="passwordSignup">Mot de passe :</label>
-			<input type="password" name="password" id="passwordSignup" required minlength="6" />
+			<label>Mot de passe :
+				<input type="password" bind:value={password} required minlength="8" />
+				{#if passwordWarning}<p class="warning">{passwordWarning}</p>{/if}
+			</label>
 
-			<label for="confirm">Confirmation du mot de passe :</label>
-			<input type="password" name="confirm" id="confirm" required minlength="6" />
+			<label>Confirmation :
+				<input type="password" bind:value={confirm} required minlength="8" />
+				{#if confirmWarning}<p class="warning">{confirmWarning}</p>{/if}
+			</label>
 
-			<label for="avatar">Avatar :</label>
-			<input type="file" name="avatar" id="avatar" accept="image/*" />
+			<label>Avatar :
+				<input type="file" accept="image/*" on:change={e => avatar = e.target.files[0]} />
+			</label>
 
 			<button type="submit">Créer mon compte</button>
 		</form>
@@ -215,8 +244,16 @@
 		border: 1px solid #ccc;
 	}
 
-	.forgot-password {
+	.warning {
+		color: orange;
 		font-size: 0.8rem;
+		margin-top: 0.2rem;
+	}
+
+	.error {
+		color: red;
+		text-align: center;
+		margin-bottom: 1rem;
 	}
 
 	@media (max-width: 768px) {
