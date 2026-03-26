@@ -83,5 +83,4 @@ npm run dev
 Puis créer un fichier ```.env``` à la racine du dossier backend en se basant sur le fichier ```.env.example```.
 
 ##  Déploiement
-Le site est déployé sur [https://blablabook-2025.onrender.com](https://blablabook-2025.onrender.com/)
-⚠️ Les serveurs sommeillent côté Render, actualisez la page du projet pour les réveiller !
+Le site est déployé sur [https://blablabook.ludivinelelan.fr/](https://blablabook.ludivinelelan.fr/)
