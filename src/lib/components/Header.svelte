@@ -15,6 +15,7 @@
 	let currentSearchQuery = ''; 
 
 	let darkMode = $state(false);
+	let menuOpen = $state(false);
 
 	async function performSearch(searchQuery) {
 		if (abortController) abortController.abort(); 
@@ -108,6 +109,16 @@
 		document.body.classList.toggle('dark-mode', darkMode);
 		localStorage.setItem('darkMode', darkMode);
 	}
+
+	function toggleMenu() {
+		menuOpen = !menuOpen;
+	}
+
+	function handleMenuBlur(event) {
+		if (!event.currentTarget.contains(event.relatedTarget)) {
+			menuOpen = false;
+		}
+	}
 </script>
 
 <header class="header">
@@ -117,32 +128,41 @@
 			<p class="title"><a href="/">BlaBlaBook</a></p>
 		</div>
 
-	<div class="auth-buttons" class:auth-buttons--admin={$user?.role === 'admin'}>
-    <button class="dark-mode" onclick={toggle}>{darkMode ? '☀️' : '🌙'}</button>
-    {#if $user}
-        <div class="btn-container">
-            <a href="/mon-compte">
-                <button class="connection-btn account-btn">Mon compte</button>
-            </a>
-        </div>
-        {#if $user?.role === 'admin'}
-            <div class="btn-container">
-                <a href="/admin">
-                    <button class="connection-btn admin-btn">Administration</button>
-                </a>
-            </div>
-        {/if}
-        <div class="btn-container">
-            <button class="connection-btn logout-btn" onclick={() => logout()}>Déconnexion</button>
-        </div>
-    {:else}
-        <div class="btn-container">
-            <a href="/connexion">
-                <button class="connection-btn">Connexion</button>
-            </a>
-        </div>
-    {/if}
-</div>
+		<div class="auth-buttons">
+			<button class="dark-mode" onclick={toggle}>{darkMode ? '☀️' : '🌙'}</button>
+
+			{#if $user}
+				{#if $user?.role === 'admin'}
+					<div class="burger-menu" onblur={handleMenuBlur} tabindex="-1">
+						<button class="burger-btn" onclick={toggleMenu}>
+							{menuOpen ? '✕' : '☰'}
+						</button>
+						{#if menuOpen}
+							<div class="burger-dropdown">
+								<a href="/mon-compte" onclick={() => menuOpen = false}>Mon compte</a>
+								<a href="/admin" onclick={() => menuOpen = false}>Administration</a>
+								<button onclick={() => { logout(); menuOpen = false; }}>Déconnexion</button>
+							</div>
+						{/if}
+					</div>
+				{:else}
+					<div class="btn-container">
+						<a href="/mon-compte">
+							<button class="connection-btn account-btn">Mon compte</button>
+						</a>
+					</div>
+					<div class="btn-container">
+						<button class="connection-btn logout-btn" onclick={() => logout()}>Déconnexion</button>
+					</div>
+				{/if}
+			{:else}
+				<div class="btn-container">
+					<a href="/connexion">
+						<button class="connection-btn">Connexion</button>
+					</a>
+				</div>
+			{/if}
+		</div>
 	</div>
 
 	<div class="search-container">
@@ -248,7 +268,7 @@
 		flex-direction: row;
 		flex-wrap: wrap;
 		gap: 0.3rem;
-		justify-content: center ;
+		justify-content: center;
 		align-items: center;
 		width: 100%;
 	}
@@ -286,6 +306,54 @@
 		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 	}
 
+	/* Burger menu */
+	.burger-menu {
+		position: relative;
+	}
+
+	.burger-btn {
+		font-size: 1.5rem;
+		background: none;
+		border: none;
+		cursor: pointer;
+		color: var(--couleur-marron);
+		padding: 0.3rem 0.6rem;
+	}
+
+	.burger-dropdown {
+		position: absolute;
+		right: 0;
+		top: calc(100% + 0.5rem);
+		background: white;
+		border-radius: 12px;
+		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+		display: flex;
+		flex-direction: column;
+		min-width: 160px;
+		z-index: 1000;
+		overflow: hidden;
+	}
+
+	.burger-dropdown a,
+	.burger-dropdown button {
+		padding: 0.75rem 1rem;
+		text-decoration: none;
+		color: var(--couleur-marron);
+		font-family: var(--font-global);
+		font-size: 0.95rem;
+		background: none;
+		border: none;
+		cursor: pointer;
+		text-align: left;
+		transition: background 0.2s;
+	}
+
+	.burger-dropdown a:hover,
+	.burger-dropdown button:hover {
+		background: #f5f5f5;
+	}
+
+	/* Search */
 	.search-container {
 		position: relative;
 		width: 100%;
@@ -427,21 +495,12 @@
 		.auth-buttons {
 			justify-self: end;
 			grid-column: 3;
-			flex-direction: row;  
-      align-items: center;
+			flex-direction: row;
+			align-items: center;
+			justify-content: flex-end;
+			flex-wrap: nowrap;
+			width: auto;
 		}
-
-   .auth-buttons--admin {
-        flex-direction: column;
-        align-items: flex-end;
-        /* gap: 0.2rem; */
-    }
-
-    .auth-buttons--admin .connection-btn {
-        padding: 0.2rem 0.7rem;
-        font-size: 0.8rem;
-    }
-
 
 		.connection-btn {
 			padding: 0.3rem 0.7rem;
@@ -483,17 +542,6 @@
 			gap: 0.4rem;
 			align-items: center;
 		}
-
-		.auth-buttons--admin {
-        flex-direction: column;
-        align-items: flex-end;
-        gap: 0.2rem;
-    }
-
-    .auth-buttons--admin .connection-btn {
-        padding: 0.2rem 0.7rem;
-        font-size: 0.8rem;
-    }
 
 		.connection-btn {
 			padding: 0.4rem 0.8rem;
