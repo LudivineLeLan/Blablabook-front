@@ -434,7 +434,7 @@
    .auth-buttons--admin {
         flex-direction: column;
         align-items: flex-end;
-        gap: 0.2rem;
+        /* gap: 0.2rem; */
     }
 
     .auth-buttons--admin .connection-btn {
