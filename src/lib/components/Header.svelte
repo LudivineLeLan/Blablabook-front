@@ -245,8 +245,10 @@
 
 	.auth-buttons {
 		display: flex;
-		flex-direction: column;
-		gap: 0.5rem;
+		flex-direction: row;
+		flex-wrap: wrap;
+		gap: 0.3rem;
+		justify-content: center ;
 		align-items: center;
 		width: 100%;
 	}
@@ -469,11 +471,11 @@
 		}
 
 		.logo-icon {
-			height: 120px;
+			height: 80px;
 		}
 
 		.title {
-			font-size: 4rem;
+			font-size: 3rem;
 		}
 
 		.auth-buttons {
