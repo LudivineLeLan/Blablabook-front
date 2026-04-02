@@ -262,10 +262,6 @@
 		text-decoration: none;
 	}
 
-	.btn-placeholder {
-		width: 150px; /* largeur approximative de la colonne droite quand connecté */
-	}
-
 	.dark-mode {
 		padding: 0.5rem 1rem;
 		background-color: none;
@@ -431,6 +427,8 @@
 		.auth-buttons {
 			justify-self: end;
 			grid-column: 3;
+			flex-direction: column;  
+      align-items: flex-end;
 		}
 
 		.connection-btn {
@@ -469,9 +467,9 @@
 		}
 
 		.auth-buttons {
-			flex-direction: row;
+			flex-direction: column;
 			gap: 0.4rem;
-			align-items: center;
+			align-items: flex-end;
 		}
 
 		.connection-btn {
