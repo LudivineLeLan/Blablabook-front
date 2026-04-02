@@ -126,14 +126,14 @@
 					</a>
 				</div>
 				{#if $user?.role === 'admin'}
-    <div class="btn-container">
-        <a href="/admin">
-            <button class="connection-btn admin-btn">
-                Administration
-            </button>
-        </a>
-    </div>
-{/if}
+					<div class="btn-container">
+						<a href="/admin">
+							<button class="connection-btn admin-btn">
+								Administration
+							</button>
+						</a>
+					</div>
+				{/if}
 				<div class="btn-container btn-container-start">
 					<button class="connection-btn logout-btn" onclick={() => logout()}>Déconnexion</button>
 				</div>
@@ -196,8 +196,7 @@
 
 										{#if book.genres?.length}
 											<span class="genre-name">
-												{book.genres.map((genre) => genre.name).join(', ')}
-											</span>
+												{book.genres.map((genre) => genre.name).join(', ')}</span>
 										{/if}
 									</div>
 								</button>
@@ -261,6 +260,10 @@
 	.btn-container a {
 		display: block;
 		text-decoration: none;
+	}
+
+	.btn-placeholder {
+		width: 150px; /* largeur approximative de la colonne droite quand connecté */
 	}
 
 	.dark-mode {
@@ -409,35 +412,25 @@
 
 	@media (min-width: 768px) {
 		.header-top {
-			flex-direction: row;
-			justify-content: space-between;
+			display: grid;
+			grid-template-columns: 1fr auto 1fr;
 			align-items: center;
-			position: relative;
 		}
 
 		.logo-title {
-			flex-direction: row;
-			align-items: center;
-			gap: 1rem;
-		}
-
-		.logo-icon {
-			height: 100px;
+			justify-self: center;
+			grid-column: 2;
 		}
 
 		.title {
-			position: absolute;
-			left: 50%;
-			transform: translateX(-50%);
-			text-align: center;
-			font-size: 2.5rem;
+			justify-self: center;
+			position: static;
+			transform: none;
 		}
 
 		.auth-buttons {
-			flex-direction: column;
-			gap: 0.3rem;
-			align-items: flex-end;
-			width: auto;
+			justify-self: end;
+			grid-column: 3;
 		}
 
 		.connection-btn {
