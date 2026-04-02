@@ -117,34 +117,32 @@
 			<p class="title"><a href="/">BlaBlaBook</a></p>
 		</div>
 
-		<div class="auth-buttons">
-			<button class="dark-mode" onclick={toggle}>{darkMode ? '☀️' : '🌙'}</button>
-			{#if $user}
-				<div class="btn-container btn-container-end">
-					<a href="/mon-compte">
-						<button class="connection-btn account-btn">Mon compte</button>
-					</a>
-				</div>
-				{#if $user?.role === 'admin'}
-					<div class="btn-container">
-						<a href="/admin">
-							<button class="connection-btn admin-btn">
-								Administration
-							</button>
-						</a>
-					</div>
-				{/if}
-				<div class="btn-container btn-container-start">
-					<button class="connection-btn logout-btn" onclick={() => logout()}>Déconnexion</button>
-				</div>
-			{:else}
-				<div class="btn-container">
-					<a href="/connexion">
-						<button class="connection-btn">Connexion</button>
-					</a>
-				</div>
-			{/if}
-		</div>
+	<div class="auth-buttons" class:auth-buttons--admin={$user?.role === 'admin'}>
+    <button class="dark-mode" onclick={toggle}>{darkMode ? '☀️' : '🌙'}</button>
+    {#if $user}
+        <div class="btn-container">
+            <a href="/mon-compte">
+                <button class="connection-btn account-btn">Mon compte</button>
+            </a>
+        </div>
+        {#if $user?.role === 'admin'}
+            <div class="btn-container">
+                <a href="/admin">
+                    <button class="connection-btn admin-btn">Administration</button>
+                </a>
+            </div>
+        {/if}
+        <div class="btn-container">
+            <button class="connection-btn logout-btn" onclick={() => logout()}>Déconnexion</button>
+        </div>
+    {:else}
+        <div class="btn-container">
+            <a href="/connexion">
+                <button class="connection-btn">Connexion</button>
+            </a>
+        </div>
+    {/if}
+</div>
 	</div>
 
 	<div class="search-container">
@@ -427,9 +425,21 @@
 		.auth-buttons {
 			justify-self: end;
 			grid-column: 3;
-			flex-direction: column;  
-      align-items: flex-end;
+			flex-direction: row;  
+      align-items: center;
 		}
+
+   .auth-buttons--admin {
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 0.2rem;
+    }
+
+    .auth-buttons--admin .connection-btn {
+        padding: 0.2rem 0.7rem;
+        font-size: 0.8rem;
+    }
+
 
 		.connection-btn {
 			padding: 0.3rem 0.7rem;
@@ -467,10 +477,21 @@
 		}
 
 		.auth-buttons {
-			flex-direction: column;
+			flex-direction: row;
 			gap: 0.4rem;
-			align-items: flex-end;
+			align-items: center;
 		}
+
+		.auth-buttons--admin {
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 0.2rem;
+    }
+
+    .auth-buttons--admin .connection-btn {
+        padding: 0.2rem 0.7rem;
+        font-size: 0.8rem;
+    }
 
 		.connection-btn {
 			padding: 0.4rem 0.8rem;
