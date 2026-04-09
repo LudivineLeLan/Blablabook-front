@@ -9,6 +9,7 @@
 	let coverFile = null;
 	let errorMessage = '';
 	let successMessage = '';
+	let showModal = false;
 
 	let formBook = book || {
 		title: '',
@@ -142,9 +143,28 @@
 			{mode === 'edit' ? 'Enregistrer les modifications' : 'Ajouter le livre'}
 		</button>
 		{#if mode === 'edit'}
-			<button type="button" class="delete-button" onclick={() => deleteBook(book.id)}>
-				Supprimer le livre
-			</button>
+			<button type="button" class="delete-button" onclick={() => (showModal = true)}>
+    Supprimer le livre
+</button>
+{#if showModal}
+    <div class="modal-container">
+        <div class="modal">
+            <p>Êtes-vous sûr de vouloir supprimer <strong>{formBook.title}</strong> ?</p>
+            <div class="modal-buttons">
+                <button
+                    type="button"
+                    class="confirmDeletion"
+                    onclick={() => {
+                        deleteBook(book.id);
+                        showModal = false;
+                    }}>Oui, supprimer</button>
+                <button type="button" class="cancelDeletion" onclick={() => (showModal = false)}>
+                    Annuler
+                </button>
+            </div>
+        </div>
+    </div>
+{/if}
 		{/if}
 		<a href="/admin/livres"><button type="button">Retour</button></a>
 	</div>
@@ -204,4 +224,30 @@
 		margin-top: 1rem;
 		text-align: center;
 	}
+
+	.modal-container {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+.modal {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
 </style>
